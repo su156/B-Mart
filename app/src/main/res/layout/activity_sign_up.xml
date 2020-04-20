@@ -52,28 +52,26 @@
             android:layout_height="wrap_content"
             android:inputType="textPassword" />
 
-        <Button
-            android:id="@+id/btn_sign_in"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/btn_bg"
-            android:text="@string/sign_in" />
-
         <TextView
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:gravity="center_horizontal"
-            android:text="@string/don_t_have_an_account" />
+            android:layout_marginTop="16dp"
+            android:text="@string/confirm_password" />
+
+        <EditText
+            android:id="@+id/edt_confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword" />
 
         <Button
             android:id="@+id/btn_sign_up"
-            style="@style/Widget.AppCompat.ButtonBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@drawable/btn_bg"
+            android:layout_marginBottom="16dp"
             android:text="@string/sign_up" />
 
     </LinearLayout>
