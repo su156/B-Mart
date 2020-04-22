@@ -6,4 +6,13 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="confirm_password">Confirm Password</string>
+
+    <string-array name="navigation_drawer_items_array">
+        <item>Home</item>
+        <item>Profile</item>
+        <item>Favourite</item>
+        <item>Selling</item>
+        <item>Shopping</item>
+        <item>Logout</item>
+    </string-array>
 </resources>
