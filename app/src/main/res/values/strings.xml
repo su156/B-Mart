@@ -6,6 +6,10 @@
     <string name="don_t_have_an_account">Don\'t have an account?</string>
     <string name="sign_up">Sign Up</string>
     <string name="confirm_password">Confirm Password</string>
+    <string name="girl_fashion">Girl Fashion</string>
+    <string name="boy_fashion">Boy Fashion</string>
+    <string name="gift_box">Gift Box</string>
+    <string name="others">Others</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>

@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Home" />
+        android:orientation="vertical"
+        android:paddingBottom="16dp">
 
-</LinearLayout>
+        <include layout="@layout/layout_girl_fashion" />
+
+        <include layout="@layout/layout_boy_fashion" />
+
+        <include layout="@layout/layout_gift_box" />
+
+        <include layout="@layout/layout_others" />
+
+    </LinearLayout>
+
+</ScrollView>
