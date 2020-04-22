@@ -50,12 +50,12 @@ public class MainActivity extends AppCompatActivity {
         setupToolbar();
 
         NavigationItem[] drawerItem = new NavigationItem[6];
-        drawerItem[0] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[0]);
-        drawerItem[1] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[1]);
-        drawerItem[2] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[2]);
-        drawerItem[3] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[3]);
-        drawerItem[4] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[4]);
-        drawerItem[5] = new NavigationItem(R.drawable.android, mNavigationDrawerItemTitles[5]);
+        drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
+        drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
+        drawerItem[2] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[2]);
+        drawerItem[3] = new NavigationItem(R.drawable.ic_equalizer_black_24dp, mNavigationDrawerItemTitles[3]);
+        drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
+        drawerItem[5] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[5]);
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.list_view_item_row, drawerItem);
         mDrawerList.setAdapter(adapter);
