@@ -15,6 +15,7 @@ import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.BitmapUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ItemRvAdapter extends RecyclerView.Adapter<ItemRvAdapter.ViewHolder>
@@ -74,7 +75,37 @@ public class ItemRvAdapter extends RecyclerView.Adapter<ItemRvAdapter.ViewHolder
 
     @Override
     public Filter getFilter() {
-        return null;
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String searchTerm = charSequence.toString().trim().toLowerCase();
+
+                final List<Item> filteredList = new ArrayList<>();
+                if (searchTerm.isEmpty()) {
+                    filteredList.addAll(new ArrayList<>(dataSet));
+                } else {
+                    for (Item item : dataSet) {
+                        if (item.getName().toLowerCase().contains(searchTerm) ||
+                                item.getPrice().toLowerCase().contains(searchTerm) ||
+                                item.getPhone().toLowerCase().contains(searchTerm) ||
+                                item.getAddress().toLowerCase().contains(searchTerm)) {
+                            filteredList.add(item);
+                        }
+                    }
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filterDataSet = (List<Item>) filterResults.values;
+
+                notifyDataSetChanged();
+            }
+        };
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

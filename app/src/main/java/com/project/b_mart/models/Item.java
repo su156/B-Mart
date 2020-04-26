@@ -4,7 +4,9 @@ import java.io.Serializable;
 
 public class Item implements Serializable {
     private String id;
+    private String sellerId;
     private String category;
+    private boolean isNew;
     private String photoString;
     private String name;
     private String phone;
@@ -21,12 +23,28 @@ public class Item implements Serializable {
         this.id = id;
     }
 
+    public String getSellerId() {
+        return sellerId;
+    }
+
+    public void setSellerId(String sellerId) {
+        this.sellerId = sellerId;
+    }
+
     public String getCategory() {
         return category;
     }
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public boolean isNew() {
+        return isNew;
+    }
+
+    public void setNew(boolean aNew) {
+        isNew = aNew;
     }
 
     public String getPhotoString() {
