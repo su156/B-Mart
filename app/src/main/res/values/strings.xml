@@ -18,7 +18,7 @@
     <string name="address">Address</string>
     <string name="phone">Phone</string>
     <string name="price">Price</string>
-    <string name="item">Item</string>
+    <string name="name">Name</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>

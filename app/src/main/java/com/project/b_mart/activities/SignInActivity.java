@@ -38,7 +38,8 @@ public class SignInActivity extends AppCompatActivity {
         findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkInputAndDoSignIn();
+                // checkInputAndDoSignIn();
+                doSignInSuccess();
             }
         });
 
