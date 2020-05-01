@@ -77,7 +77,7 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
         Toast.makeText(getContext(), item.getPrice(), Toast.LENGTH_SHORT).show();
     }
 
-    private List<Item> generateItems() {
+    static List<Item> generateItems() {
         List<Item> dataSet = new ArrayList<>();
 
         for (int i = 0; i < 100; i++) {
