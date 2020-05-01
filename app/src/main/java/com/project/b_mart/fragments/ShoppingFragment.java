@@ -86,6 +86,7 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
             item.setPhone("Phone " + i);
             item.setPrice("$" + i);
             item.setAddress("Address " + i);
+            item.setDescription("Description " + i);
             dataSet.add(item);
         }
 

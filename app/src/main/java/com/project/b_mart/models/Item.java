@@ -14,6 +14,7 @@ public class Item implements Serializable {
     private String address;
     private double locationLatitude;
     private double locationLongitude;
+    private String description;
 
     public String getId() {
         return id;
@@ -101,5 +102,13 @@ public class Item implements Serializable {
 
     public void setLocationLongitude(double locationLongitude) {
         this.locationLongitude = locationLongitude;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 }
