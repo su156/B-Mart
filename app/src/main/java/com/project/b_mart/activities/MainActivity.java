@@ -23,6 +23,7 @@ import com.project.b_mart.fragments.LogoutFragment;
 import com.project.b_mart.fragments.ProfileFragment;
 import com.project.b_mart.fragments.FavouriteFragment;
 import com.project.b_mart.fragments.ShoppingFragment;
+import com.project.b_mart.fragments.UserListFragment;
 import com.project.b_mart.models.NavigationItem;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,12 +50,13 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        NavigationItem[] drawerItem = new NavigationItem[5];
+        NavigationItem[] drawerItem = new NavigationItem[6];
         drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
         drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
-        drawerItem[2] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[2]);
-        drawerItem[3] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[3]);
-        drawerItem[4] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[4]);
+        drawerItem[2] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
+        drawerItem[3] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
+        drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
+        drawerItem[5] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[5]);
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.layout_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -114,9 +116,12 @@ public class MainActivity extends AppCompatActivity {
                 fragment = new ProfileFragment();
                 break;
             case 2:
-                fragment = new FavouriteFragment();
+                fragment = new UserListFragment();
                 break;
             case 3:
+                fragment = new FavouriteFragment();
+                break;
+            case 4:
                 fragment = new ShoppingFragment();
                 break;
             default:

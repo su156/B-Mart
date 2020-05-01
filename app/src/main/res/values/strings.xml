@@ -23,6 +23,7 @@
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
         <item>Profile</item>
+        <item>User List</item>
         <item>Favourite</item>
         <item>Shopping</item>
         <item>Logout</item>
