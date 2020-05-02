@@ -1,14 +1,22 @@
 package com.project.b_mart.fragments;
 
+import android.app.Dialog;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.b_mart.R;
+import com.project.b_mart.adapters.StringRvAdapter;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class HomeFragment extends Fragment {
 
@@ -19,38 +27,73 @@ public class HomeFragment extends Fragment {
         rootView.findViewById(R.id.girl_fashion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.girl_fashion), Toast.LENGTH_SHORT).show();
+                showSubCategoryChooserDialog(getString(R.string.girl_fashion),
+                        Arrays.asList(getResources().getStringArray(R.array.girl_fashion_sub_categories)));
             }
         });
 
         rootView.findViewById(R.id.boy_fashion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.boy_fashion), Toast.LENGTH_SHORT).show();
+                showSubCategoryChooserDialog(getString(R.string.boy_fashion),
+                        Arrays.asList(getResources().getStringArray(R.array.boy_fashion_sub_categories)));
             }
         });
 
         rootView.findViewById(R.id.cosmetic).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.cosmetic), Toast.LENGTH_SHORT).show();
+                showSubCategoryChooserDialog(getString(R.string.cosmetic),
+                        Arrays.asList(getResources().getStringArray(R.array.cosmetic_sub_categories)));
             }
         });
 
         rootView.findViewById(R.id.electronic_device).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.electronic_device), Toast.LENGTH_SHORT).show();
+                showSubCategoryChooserDialog(getString(R.string.electronic_device),
+                        Arrays.asList(getResources().getStringArray(R.array.electronic_device_sub_categories)));
             }
         });
 
         rootView.findViewById(R.id.others).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.others), Toast.LENGTH_SHORT).show();
+                goToItemListActivity(getString(R.string.others), null);
             }
         });
 
         return rootView;
+    }
+
+    private void showSubCategoryChooserDialog(final String topCategory, List<String> subCategories) {
+        if (getContext() == null) {
+            return;
+        }
+
+        final Dialog dialog = new Dialog(getContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_sub_categories_chooser);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        }
+
+        RecyclerView rv = dialog.findViewById(R.id.rv);
+
+        StringRvAdapter adapter = new StringRvAdapter(subCategories, new StringRvAdapter.OnListItemClickListener() {
+            @Override
+            public void onClick(int position, String s) {
+                dialog.dismiss();
+                goToItemListActivity(topCategory, s);
+            }
+        });
+
+        rv.setAdapter(adapter);
+
+        dialog.show();
+    }
+
+    private void goToItemListActivity(String topCategory, String subCategory) {
+        Toast.makeText(getContext(), topCategory + subCategory, Toast.LENGTH_SHORT).show();
     }
 }
