@@ -30,6 +30,20 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        rootView.findViewById(R.id.cosmetic).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), getString(R.string.cosmetic), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        rootView.findViewById(R.id.electronic_device).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(getContext(), getString(R.string.electronic_device), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         rootView.findViewById(R.id.others).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
