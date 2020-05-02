@@ -8,7 +8,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="girl_fashion">Girl Fashion</string>
     <string name="boy_fashion">Boy Fashion</string>
-    <string name="gift_box">Gift Box</string>
+    <string name="cosmetic">Cosmetic</string>
+    <string name="electronic_device">Electronic Device</string>
     <string name="others">Others</string>
     <string name="search">Search</string>
     <string name="old">Old</string>
@@ -36,7 +37,35 @@
     <string-array name="category_array">
         <item>@string/girl_fashion</item>
         <item>@string/boy_fashion</item>
-        <item>@string/gift_box</item>
+        <item>@string/cosmetic</item>
+        <item>@string/electronic_device</item>
         <item>@string/others</item>
+    </string-array>
+
+    <string-array name="girl_fashion_sub_categories">
+        <item>Trouser/Shirt</item>
+        <item>T-shirt/Blouse/Dress</item>
+        <item>Traditional Costume</item>
+        <item>Accessory</item>
+        <item>Foot Ware</item>
+    </string-array>
+
+    <string-array name="boy_fashion_sub_categories">
+        <item>Trouser</item>
+        <item>T-shirt</item>
+        <item>Traditional Costume</item>
+        <item>Accessory</item>
+        <item>Foot Ware</item>
+    </string-array>
+
+    <string-array name="electronic_device_sub_categories">
+        <item>Mobile Phone</item>
+        <item>Laptop</item>
+        <item>Motorbikes</item>
+    </string-array>
+
+    <string-array name="cosmetic_sub_categories">
+        <item>Girl Cosmetic</item>
+        <item>Men Cosmetic</item>
     </string-array>
 </resources>

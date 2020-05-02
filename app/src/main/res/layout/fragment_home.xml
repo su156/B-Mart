@@ -15,7 +15,9 @@
 
         <include layout="@layout/layout_boy_fashion" />
 
-        <include layout="@layout/layout_gift_box" />
+        <include layout="@layout/layout_cosmetic" />
+
+        <include layout="@layout/layout_electronic_device" />
 
         <include layout="@layout/layout_others" />
 

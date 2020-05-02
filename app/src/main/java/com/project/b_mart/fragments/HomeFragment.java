@@ -30,13 +30,6 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        rootView.findViewById(R.id.gift_box).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), getString(R.string.gift_box), Toast.LENGTH_SHORT).show();
-            }
-        });
-
         rootView.findViewById(R.id.others).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
