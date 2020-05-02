@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.DrawerItemCustomAdapter;
+import com.project.b_mart.fragments.ContactUsFragment;
 import com.project.b_mart.fragments.HomeFragment;
 import com.project.b_mart.fragments.LogoutFragment;
 import com.project.b_mart.fragments.ProfileFragment;
@@ -50,13 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
         setupToolbar();
 
-        NavigationItem[] drawerItem = new NavigationItem[6];
+        NavigationItem[] drawerItem = new NavigationItem[7];
         drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
         drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
         drawerItem[2] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
         drawerItem[3] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
         drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
-        drawerItem[5] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[5]);
+        drawerItem[5] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
+        drawerItem[6] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.layout_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -123,6 +125,9 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case 4:
                 fragment = new ShoppingFragment();
+                break;
+            case 5:
+                fragment = new ContactUsFragment();
                 break;
             default:
                 fragment = new LogoutFragment();

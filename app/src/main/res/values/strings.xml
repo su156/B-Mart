@@ -19,6 +19,9 @@
     <string name="phone">Phone</string>
     <string name="price">Price</string>
     <string name="name">Name</string>
+    <string name="contact_us_msg">If you have any question and suggestion about my application, please contact us B.Mart@gmail.com at any time. We can\'t wait to share about our excellent services with you. Thanks for choosing us!</string>
+    <string name="copyright_2020">Copyright © 2020</string>
+    <string name="all_rights_reserved_by_b_mart">All rights reserved by B.Mart</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
@@ -26,6 +29,7 @@
         <item>User List</item>
         <item>Favourite</item>
         <item>Shopping</item>
+        <item>Contact Us</item>
         <item>Logout</item>
     </string-array>
 
