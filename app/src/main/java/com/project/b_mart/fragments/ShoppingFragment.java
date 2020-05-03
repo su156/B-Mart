@@ -2,6 +2,7 @@ package com.project.b_mart.fragments;
 
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,11 +46,22 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
         RecyclerView rv = rootView.findViewById(R.id.rv);
 
         if (getContext() != null) {
+            String[] topCategories = getResources().getStringArray(R.array.category_array);
             ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_list_item_1,
-                    getResources().getStringArray(R.array.category_array));
+                    topCategories);
             spnCategory.setAdapter(spnAdapter);
+
+            if (!TextUtils.isEmpty(topCategory)) {
+                for (int i = 0; i < topCategories.length; i++) {
+                    if (topCategory.equals(topCategories[i])) {
+                        spnCategory.setSelection(i);
+                        break;
+                    }
+                }
+            }
         }
+
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
