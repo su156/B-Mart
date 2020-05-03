@@ -37,6 +37,8 @@ public class ItemEditorActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.view).setVisibility(View.GONE);
+
         imageView = findViewById(R.id.img_view);
         edtName = findViewById(R.id.edt_item);
         edtPrice = findViewById(R.id.edt_price);

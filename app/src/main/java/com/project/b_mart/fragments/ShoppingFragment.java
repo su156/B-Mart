@@ -1,5 +1,6 @@
 package com.project.b_mart.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.b_mart.R;
+import com.project.b_mart.activities.ItemDetailsActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.Helper;
@@ -115,7 +117,8 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
 
     @Override
     public void onClick(int position, Item item) {
-        Toast.makeText(getContext(), item.getName(), Toast.LENGTH_SHORT).show();
+        ItemDetailsActivity.setItem(item);
+        startActivity(new Intent(getContext(), ItemDetailsActivity.class));
     }
 
     @Override

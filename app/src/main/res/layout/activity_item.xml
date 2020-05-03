@@ -40,7 +40,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/editor_content_scrolling" />
+    <include
+        android:id="@+id/edit"
+        layout="@layout/editor_content_scrolling" />
+
+    <include
+        android:id="@+id/view"
+        layout="@layout/content_scrolling" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab"
