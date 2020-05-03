@@ -28,6 +28,13 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
     private Spinner spnCategory;
     private EditText edtSearch;
     private ItemRvAdapter adapter;
+    private String topCategory;
+    private String subCategory;
+
+    public ShoppingFragment(String topCategory, String subCategory) {
+        this.topCategory = topCategory;
+        this.subCategory = subCategory;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

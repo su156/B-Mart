@@ -6,7 +6,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -80,15 +79,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
     @Override
     public void onSubCategorySelected(String topCategory, String subCategory) {
-        Toast.makeText(this, topCategory + " \\ " + subCategory, Toast.LENGTH_SHORT).show();
-    }
-
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
+        // 4 is Shopping fragment's position
+        selectItem(4, topCategory, subCategory);
     }
 
     @Override
@@ -114,7 +106,19 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         mDrawerToggle.syncState();
     }
 
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
+
     private void selectItem(int position) {
+        selectItem(position, null, null);
+    }
+
+    private void selectItem(int position, String topCategory, String subCategory) {
         Fragment fragment;
         switch (position) {
             case 0:
@@ -130,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                 fragment = new FavouriteFragment();
                 break;
             case 4:
-                fragment = new ShoppingFragment();
+                fragment = new ShoppingFragment(topCategory, subCategory);
                 break;
             case 5:
                 fragment = new ContactUsFragment();
