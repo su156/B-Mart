@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.b_mart.R;
+import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText edtEmail, edtPassword, edtConfirmPassword;
@@ -59,8 +60,8 @@ public class SignUpActivity extends AppCompatActivity {
         }
 
         if (TextUtils.isEmpty(confirmPassword)) {
-            edtPassword.requestFocus();
-            edtPassword.setError("Enter confirm password");
+            edtConfirmPassword.requestFocus();
+            edtConfirmPassword.setError("Enter confirm password");
             return;
         }
 
@@ -72,7 +73,7 @@ public class SignUpActivity extends AppCompatActivity {
         doSignUp(email, password);
     }
 
-    private void doSignUp(String email, final String password) {
+    private void doSignUp(final String email, final String password) {
         progressDialog.show();
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
@@ -81,6 +82,8 @@ public class SignUpActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
+                            SharedPreferencesUtils.saveString(SignUpActivity.this, SharedPreferencesUtils.EMAIL, email);
+                            SharedPreferencesUtils.saveString(SignUpActivity.this, SharedPreferencesUtils.PASSWORD, password);
                             setResult(RESULT_OK);
                             finish();
                         } else {

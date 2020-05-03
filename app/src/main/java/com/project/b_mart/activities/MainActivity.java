@@ -21,12 +21,12 @@ import com.project.b_mart.R;
 import com.project.b_mart.adapters.DrawerItemCustomAdapter;
 import com.project.b_mart.fragments.ContactUsFragment;
 import com.project.b_mart.fragments.HomeFragment;
-import com.project.b_mart.fragments.LogoutFragment;
 import com.project.b_mart.fragments.ProfileFragment;
 import com.project.b_mart.fragments.FavouriteFragment;
 import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
 import com.project.b_mart.models.NavigationItem;
+import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
     private CharSequence title;
@@ -144,8 +144,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                 fragment = new ContactUsFragment();
                 break;
             default:
-                fragment = new LogoutFragment();
-                break;
+                signOut();
+                return;
         }
 
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
@@ -176,5 +176,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
     public void setFavVisibility(int visibility) {
         fab.setVisibility(visibility);
+    }
+
+    private void signOut() {
+        SharedPreferencesUtils.saveString(this, SharedPreferencesUtils.EMAIL, "");
+        SharedPreferencesUtils.saveString(this, SharedPreferencesUtils.PASSWORD, "");
+
+        startActivity(new Intent(this, SignInActivity.class));
+        finishAffinity();
     }
 }

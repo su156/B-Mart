@@ -18,6 +18,7 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.b_mart.R;
 import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class SignInActivity extends AppCompatActivity {
     private EditText edtEmail, edtPassword;
@@ -38,8 +39,7 @@ public class SignInActivity extends AppCompatActivity {
         findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // checkInputAndDoSignIn();
-                doSignInSuccess();
+                checkInputAndDoSignIn();
             }
         });
 
@@ -49,6 +49,13 @@ public class SignInActivity extends AppCompatActivity {
                 startActivityForResult(new Intent(SignInActivity.this, SignUpActivity.class), Constants.SIGN_UP_REQUEST_CODE);
             }
         });
+
+        String email = SharedPreferencesUtils.getString(this, SharedPreferencesUtils.EMAIL);
+        String password = SharedPreferencesUtils.getString(this, SharedPreferencesUtils.PASSWORD);
+
+        if (!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password)) {
+            doSignIn(email, password);
+        }
     }
 
     @Override
@@ -79,7 +86,7 @@ public class SignInActivity extends AppCompatActivity {
         doSignIn(email, password);
     }
 
-    private void doSignIn(String email, String password) {
+    private void doSignIn(final String email, final String password) {
         progressDialog.show();
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
@@ -88,6 +95,9 @@ public class SignInActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         progressDialog.dismiss();
                         if (task.isSuccessful()) {
+                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.EMAIL, email);
+                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.PASSWORD, password);
+
                             doSignInSuccess();
                         } else {
                             Toast.makeText(SignInActivity.this, "Cannot sign in. Try again!", Toast.LENGTH_SHORT).show();
