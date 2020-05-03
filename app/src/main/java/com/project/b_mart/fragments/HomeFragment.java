@@ -1,14 +1,15 @@
 package com.project.b_mart.fragments;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class HomeFragment extends Fragment {
+    private OnSubCategorySelectedListener onSubCategorySelectedListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -59,11 +61,22 @@ public class HomeFragment extends Fragment {
         rootView.findViewById(R.id.others).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                goToItemListActivity(getString(R.string.others), null);
+                onSubCategorySelectedListener.onSubCategorySelected(getString(R.string.others), null);
             }
         });
 
         return rootView;
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+
+        if (context instanceof OnSubCategorySelectedListener) {
+            onSubCategorySelectedListener = (OnSubCategorySelectedListener) context;
+        } else {
+            throw new ClassCastException(context.toString() + " must implement OnSubCategorySelectedListener!");
+        }
     }
 
     private void showSubCategoryChooserDialog(final String topCategory, List<String> subCategories) {
@@ -84,7 +97,7 @@ public class HomeFragment extends Fragment {
             @Override
             public void onClick(int position, String s) {
                 dialog.dismiss();
-                goToItemListActivity(topCategory, s);
+                onSubCategorySelectedListener.onSubCategorySelected(topCategory, s);
             }
         });
 
@@ -93,7 +106,7 @@ public class HomeFragment extends Fragment {
         dialog.show();
     }
 
-    private void goToItemListActivity(String topCategory, String subCategory) {
-        Toast.makeText(getContext(), topCategory + subCategory, Toast.LENGTH_SHORT).show();
+    public interface OnSubCategorySelectedListener {
+        void onSubCategorySelected(String topCategory, String subCategory);
     }
 }

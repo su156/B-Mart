@@ -6,6 +6,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -27,7 +28,7 @@ import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
 import com.project.b_mart.models.NavigationItem;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
     private CharSequence title;
     private String[] mNavigationDrawerItemTitles;
 
@@ -75,6 +76,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         selectItem(0);
+    }
+
+    @Override
+    public void onSubCategorySelected(String topCategory, String subCategory) {
+        Toast.makeText(this, topCategory + " \\ " + subCategory, Toast.LENGTH_SHORT).show();
     }
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
