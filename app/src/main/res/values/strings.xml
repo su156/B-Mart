@@ -23,6 +23,7 @@
     <string name="contact_us_msg">If you have any question and suggestion about my application, please contact us B.Mart@gmail.com at any time. We can\'t wait to share about our excellent services with you. Thanks for choosing us!</string>
     <string name="copyright_2020">Copyright © 2020</string>
     <string name="all_rights_reserved_by_b_mart">All rights reserved by B.Mart</string>
+    <string name="all">All</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
@@ -43,6 +44,7 @@
     </string-array>
 
     <string-array name="girl_fashion_sub_categories">
+        <item>@string/all</item>
         <item>Trouser/Shirt</item>
         <item>T-shirt/Blouse/Dress</item>
         <item>Traditional Costume</item>
@@ -51,6 +53,7 @@
     </string-array>
 
     <string-array name="boy_fashion_sub_categories">
+        <item>@string/all</item>
         <item>Trouser</item>
         <item>T-shirt</item>
         <item>Traditional Costume</item>
@@ -59,13 +62,19 @@
     </string-array>
 
     <string-array name="electronic_device_sub_categories">
+        <item>@string/all</item>
         <item>Mobile Phone</item>
         <item>Laptop</item>
         <item>Motorbikes</item>
     </string-array>
 
     <string-array name="cosmetic_sub_categories">
+        <item>@string/all</item>
         <item>Girl Cosmetic</item>
         <item>Men Cosmetic</item>
+    </string-array>
+
+    <string-array name="others_sub_categories">
+        <item>@string/all</item>
     </string-array>
 </resources>

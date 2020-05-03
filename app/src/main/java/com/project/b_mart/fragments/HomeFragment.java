@@ -61,7 +61,7 @@ public class HomeFragment extends Fragment {
         rootView.findViewById(R.id.others).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSubCategorySelectedListener.onSubCategorySelected(getString(R.string.others), null);
+                onSubCategorySelectedListener.onSubCategorySelected(getString(R.string.others), getString(R.string.all));
             }
         });
 

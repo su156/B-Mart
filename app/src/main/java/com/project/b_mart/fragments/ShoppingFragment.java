@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.utils.Helper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import java.util.List;
 public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListItemClickListener,
         TextWatcher {
     private Spinner spnCategory;
+    private Spinner spnSubCategory;
     private EditText edtSearch;
     private ItemRvAdapter adapter;
     private String topCategory;
@@ -42,11 +44,13 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         spnCategory = rootView.findViewById(R.id.spn_category);
+        spnSubCategory = rootView.findViewById(R.id.spn_sub_category);
         edtSearch = rootView.findViewById(R.id.edt_search);
         RecyclerView rv = rootView.findViewById(R.id.rv);
 
+        final String[] topCategories = getResources().getStringArray(R.array.category_array);
+
         if (getContext() != null) {
-            String[] topCategories = getResources().getStringArray(R.array.category_array);
             ArrayAdapter<String> spnAdapter = new ArrayAdapter<>(getContext(),
                     android.R.layout.simple_list_item_1,
                     topCategories);
@@ -59,6 +63,8 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
                         break;
                     }
                 }
+            } else {
+                topCategory = topCategories[0];
             }
         }
 
@@ -66,6 +72,27 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 edtSearch.setText("");
+
+                topCategory = topCategories[position];
+
+                onTopCategorySelected(topCategory);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+
+        spnSubCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                edtSearch.setText("");
+
+                subCategory = (String) spnSubCategory.getItemAtPosition(position);
+
+                Toast.makeText(getContext(), subCategory, Toast.LENGTH_SHORT).show();
+
+                // TODO: 5/3/2020 call api
             }
 
             @Override
@@ -94,6 +121,29 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
     @Override
     public void onLongClick(int position, Item item) {
         Toast.makeText(getContext(), item.getPrice(), Toast.LENGTH_SHORT).show();
+    }
+
+    private void onTopCategorySelected(String topCategory) {
+        if (getContext() == null) {
+            return;
+        }
+
+        String[] subCategories = TextUtils.isEmpty(topCategory)
+                ? new String[]{}
+                : Helper.getSubCategories(getContext(), topCategory);
+        ArrayAdapter<String> spnSubAdapter = new ArrayAdapter<>(getContext(),
+                android.R.layout.simple_list_item_1,
+                subCategories);
+        spnSubCategory.setAdapter(spnSubAdapter);
+
+        if (!TextUtils.isEmpty(subCategory)) {
+            for (int i = 0; i < subCategories.length; i++) {
+                if (subCategory.equals(subCategories[i])) {
+                    spnSubCategory.setSelection(i);
+                    break;
+                }
+            }
+        }
     }
 
     static List<Item> generateItems() {

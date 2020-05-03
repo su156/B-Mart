@@ -28,6 +28,7 @@ public class UserListFragment extends Fragment implements UserAdapter.OnListItem
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         rootView.findViewById(R.id.spn_category).setVisibility(View.GONE);
+        rootView.findViewById(R.id.spn_sub_category).setVisibility(View.GONE);
 
         EditText edtSearch = rootView.findViewById(R.id.edt_search);
         edtSearch.addTextChangedListener(this);
