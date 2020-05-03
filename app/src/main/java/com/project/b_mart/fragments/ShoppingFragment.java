@@ -14,7 +14,6 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,7 +26,7 @@ import com.project.b_mart.utils.Helper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListItemClickListener,
+public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener,
         TextWatcher {
     private Spinner spnCategory;
     private Spinner spnSubCategory;
@@ -43,6 +42,8 @@ public class ShoppingFragment extends Fragment implements ItemRvAdapter.OnListIt
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setFavVisibility(View.VISIBLE);
+
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         spnCategory = rootView.findViewById(R.id.spn_category);

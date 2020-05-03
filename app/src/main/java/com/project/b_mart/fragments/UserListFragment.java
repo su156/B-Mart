@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,11 +19,13 @@ import com.project.b_mart.models.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserListFragment extends Fragment implements UserAdapter.OnListItemClickListener, TextWatcher {
+public class UserListFragment extends BaseFragment implements UserAdapter.OnListItemClickListener, TextWatcher {
     private UserAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setFavVisibility(View.GONE);
+
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
         rootView.findViewById(R.id.spn_category).setVisibility(View.GONE);

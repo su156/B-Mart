@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.b_mart.R;
@@ -19,11 +18,13 @@ import com.project.b_mart.adapters.StringRvAdapter;
 import java.util.Arrays;
 import java.util.List;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
     private OnSubCategorySelectedListener onSubCategorySelectedListener;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        setFavVisibility(View.VISIBLE);
+
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
         rootView.findViewById(R.id.girl_fashion).setOnClickListener(new View.OnClickListener() {

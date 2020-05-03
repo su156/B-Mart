@@ -47,7 +47,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImagePickerUtils.pickImage(ItemDetailsActivity.this, ImagePickerUtils.REQUEST_CODE);
+                // TODO: 5/3/2020 save to fav list
             }
         });
 

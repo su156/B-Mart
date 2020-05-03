@@ -16,6 +16,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.DrawerItemCustomAdapter;
 import com.project.b_mart.fragments.ContactUsFragment;
@@ -36,11 +37,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     private Toolbar toolbar;
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fragmentManager;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        fab = findViewById(R.id.fab);
 
         fragmentManager = getSupportFragmentManager();
 
@@ -67,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         setupDrawerToggle();
 
-        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, ItemEditorActivity.class));
@@ -168,5 +172,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, toolbar, R.string.app_name, R.string.app_name);
         //This is necessary to change the icon of the Drawer Toggle upon state change.
         mDrawerToggle.syncState();
+    }
+
+    public void setFavVisibility(int visibility) {
+        fab.setVisibility(visibility);
     }
 }
