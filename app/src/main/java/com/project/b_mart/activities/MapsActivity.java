@@ -5,6 +5,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,9 +20,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.project.b_mart.R;
+import com.project.b_mart.utils.Constants;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback, LocationListener {
-    private LatLng latLng;
+    private static LatLng latLng;
+    private static boolean setMapChooserListener;
 
     private GoogleMap mMap;
 
@@ -36,25 +39,49 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        MapsActivity.latLng = null;
+        MapsActivity.setMapChooserListener = false;
+    }
+
+    @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        if (latLng == null) {
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            if (locationManager != null &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                    ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
 
-            Toast.makeText(this,
-                    "Current location is finding...",
-                    Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,
+                        "Current location is finding...",
+                        Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            addMarkOnMap();
+        }
+
+        if (setMapChooserListener) {
+            mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+                @Override
+                public void onMapLongClick(LatLng latLng) {
+                    Intent i = new Intent();
+                    i.putExtra(Constants.RESULT_LAT_AND_LONG, latLng);
+                    setResult(RESULT_OK, i);
+                    finish();
+                }
+            });
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        if (this.latLng == null) {
-            this.latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        if (latLng == null) {
+            latLng = new LatLng(location.getLatitude(), location.getLongitude());
             addMarkOnMap();
         }
     }
@@ -72,7 +99,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void addMarkOnMap() {
-        this.mMap.addMarker(new MarkerOptions().position(latLng));
-        this.mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+        mMap.addMarker(new MarkerOptions().position(latLng));
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13));
+    }
+
+    public static void setLatLng(double latitude, double longitude) {
+        if (latitude != 0 && longitude != 0) {
+            MapsActivity.latLng = new LatLng(latitude, longitude);
+        }
+    }
+
+    public static void setSetMapChooserListener(boolean setMapChooserListener) {
+        MapsActivity.setMapChooserListener = setMapChooserListener;
     }
 }

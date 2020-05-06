@@ -16,8 +16,10 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -41,6 +43,7 @@ public class ItemEditorActivity extends AppCompatActivity {
     private RadioButton rdbNew;
     private Spinner spnSubCategory;
     private EditText edtName, edtPrice, edtPhone, edtAddress, edtDescription;
+    private TextView tvLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +71,7 @@ public class ItemEditorActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edt_phone);
         edtAddress = findViewById(R.id.edt_address);
         edtDescription = findViewById(R.id.edt_description);
+        tvLocation = findViewById(R.id.tv_location);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_add_black_24dp));
@@ -127,10 +131,12 @@ public class ItemEditorActivity extends AppCompatActivity {
             }
         });
 
-        findViewById(R.id.tv_location).setOnClickListener(new View.OnClickListener() {
+        tvLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ItemEditorActivity.this, MapsActivity.class));
+                MapsActivity.setLatLng(item.getLocationLatitude(), item.getLocationLongitude());
+                MapsActivity.setSetMapChooserListener(true);
+                startActivityForResult(new Intent(ItemEditorActivity.this, MapsActivity.class), Constants.REQUEST_CODE_LAT_AND_LONG);
             }
         });
 
@@ -145,10 +151,20 @@ public class ItemEditorActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (resultCode == RESULT_OK && data != null && requestCode == ImagePickerUtils.REQUEST_CODE) {
-            Bitmap bm = BitmapUtils.resize(ImagePickerUtils.parseBitmap(this, data));
-            imageView.setImageBitmap(bm);
-            item.setPhotoString(BitmapUtils.bitmapToBase64String(bm));
+        if (resultCode == RESULT_OK && data != null) {
+            if (requestCode == ImagePickerUtils.REQUEST_CODE) {
+                Bitmap bm = BitmapUtils.resize(ImagePickerUtils.parseBitmap(this, data));
+                imageView.setImageBitmap(bm);
+                item.setPhotoString(BitmapUtils.bitmapToBase64String(bm));
+            } else if (requestCode == Constants.REQUEST_CODE_LAT_AND_LONG && data.getExtras() != null) {
+                LatLng latLng = (LatLng) data.getExtras().get(Constants.RESULT_LAT_AND_LONG);
+                if (latLng != null) {
+                    item.setLocationLatitude(latLng.latitude);
+                    item.setLocationLongitude(latLng.longitude);
+
+                    tvLocation.setText(String.format("%s, %s", latLng.latitude, latLng.longitude));
+                }
+            }
         }
     }
 
@@ -203,8 +219,6 @@ public class ItemEditorActivity extends AppCompatActivity {
             return;
         }
         item.setSellerId(user.getUid());
-        // TODO: 5/6/2020 set categories
-        // TODO: 5/6/2020 set location lat and long
 
         Helper.showProgressDialog(this, "Uploading...");
         itemTable.child(item.getId()).setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {

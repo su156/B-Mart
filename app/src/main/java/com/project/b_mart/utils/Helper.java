@@ -11,7 +11,6 @@ public class Helper {
 
     public static void showProgressDialog(Context context, String title) {
         progressDialog = new ProgressDialog(context);
-        progressDialog.setProgressStyle(android.R.attr.progressBarStyleSmall);
         progressDialog.setMessage(title);
         progressDialog.setCancelable(false);
         progressDialog.show();
