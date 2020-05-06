@@ -6,6 +6,7 @@ public class Item implements Serializable {
     private String id;
     private String sellerId;
     private String category;
+    private String subCategory;
     private boolean isNew;
     private String photoString;
     private String name;
@@ -38,6 +39,14 @@ public class Item implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getSubCategory() {
+        return subCategory;
+    }
+
+    public void setSubCategory(String subCategory) {
+        this.subCategory = subCategory;
     }
 
     public boolean isNew() {

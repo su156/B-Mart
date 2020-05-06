@@ -35,6 +35,16 @@
 
         </RadioGroup>
 
+        <Spinner
+            android:id="@+id/spn_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Spinner
+            android:id="@+id/spn_sub_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <TextView
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
