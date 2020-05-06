@@ -127,6 +127,13 @@ public class ItemEditorActivity extends AppCompatActivity {
             }
         });
 
+        findViewById(R.id.tv_location).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(ItemEditorActivity.this, MapsActivity.class));
+            }
+        });
+
         if (item == null) {
             item = new Item();
         } else {

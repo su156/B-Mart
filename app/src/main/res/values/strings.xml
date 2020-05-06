@@ -24,6 +24,8 @@
     <string name="copyright_2020">Copyright © 2020</string>
     <string name="all_rights_reserved_by_b_mart">All rights reserved by B.Mart</string>
     <string name="all">All</string>
+    <string name="add_gps_location">Add GPS location</string>
+    <string name="title_activity_maps">Map</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
