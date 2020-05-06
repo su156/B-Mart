@@ -1,5 +1,6 @@
 package com.project.b_mart.activities;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -7,19 +8,31 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.BitmapUtils;
+import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.ImagePickerUtils;
 
 public class ItemEditorActivity extends AppCompatActivity {
     private static Item item;
     private ImageView imageView;
+    private RadioButton rdbNew;
     private EditText edtName, edtPrice, edtPhone, edtAddress, edtDescription;
 
     @Override
@@ -40,6 +53,7 @@ public class ItemEditorActivity extends AppCompatActivity {
         findViewById(R.id.view).setVisibility(View.GONE);
 
         imageView = findViewById(R.id.img_view);
+        rdbNew = findViewById(R.id.rdb_new);
         edtName = findViewById(R.id.edt_item);
         edtPrice = findViewById(R.id.edt_price);
         edtPhone = findViewById(R.id.edt_phone);
@@ -52,6 +66,13 @@ public class ItemEditorActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 ImagePickerUtils.pickImage(ItemEditorActivity.this, ImagePickerUtils.REQUEST_CODE);
+            }
+        });
+
+        findViewById(R.id.btn_upload).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveItem();
             }
         });
 
@@ -69,6 +90,7 @@ public class ItemEditorActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK && data != null && requestCode == ImagePickerUtils.REQUEST_CODE) {
             Bitmap bm = BitmapUtils.resize(ImagePickerUtils.parseBitmap(this, data));
             imageView.setImageBitmap(bm);
+            item.setPhotoString(BitmapUtils.bitmapToBase64String(bm));
         }
     }
 
@@ -90,5 +112,52 @@ public class ItemEditorActivity extends AppCompatActivity {
         edtPhone.setText(item.getPhone());
         edtAddress.setText(item.getAddress());
         edtDescription.setText(item.getDescription());
+    }
+
+    private void getDataFromUI() {
+        item.setNew(rdbNew.isChecked());
+        item.setName(edtName.getText().toString());
+        item.setPrice(edtPrice.getText().toString());
+        item.setPhone(edtPhone.getText().toString());
+        item.setAddress(edtAddress.getText().toString());
+        item.setDescription(edtDescription.getText().toString());
+    }
+
+    private void saveItem() {
+        getDataFromUI();
+
+        if (TextUtils.isEmpty(item.getPhotoString())) {
+            Toast.makeText(this, "Please add photo!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        DatabaseReference itemTable = FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE);
+
+        if (TextUtils.isEmpty(item.getId())) {
+            item.setId(itemTable.push().getKey());
+        }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        item.setSellerId(user.getUid());
+        // TODO: 5/6/2020 set categories
+        // TODO: 5/6/2020 set location lat and long
+
+        Helper.showProgressDialog(this, "Uploading...");
+        itemTable.child(item.getId()).setValue(item).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                Helper.dismissProgressDialog();
+                if (task.isSuccessful()) {
+                    setResult(RESULT_OK);
+                    finish();
+                } else {
+                    Toast.makeText(ItemEditorActivity.this, "Fail to save item!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 }

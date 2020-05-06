@@ -1,10 +1,25 @@
 package com.project.b_mart.utils;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.project.b_mart.R;
 
 public class Helper {
+
+    private static ProgressDialog progressDialog;
+
+    public static void showProgressDialog(Context context, String title) {
+        progressDialog = new ProgressDialog(context);
+        progressDialog.setProgressStyle(android.R.attr.progressBarStyleSmall);
+        progressDialog.setMessage(title);
+        progressDialog.setCancelable(false);
+        progressDialog.show();
+    }
+
+    public static void dismissProgressDialog() {
+        progressDialog.dismiss();
+    }
 
     public static String[] getSubCategories(Context context, String topCategory) {
         int subCategoriesId = 0;

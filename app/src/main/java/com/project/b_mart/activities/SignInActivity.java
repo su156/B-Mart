@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,11 +17,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.project.b_mart.R;
 import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class SignInActivity extends AppCompatActivity {
     private EditText edtEmail, edtPassword;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +30,6 @@ public class SignInActivity extends AppCompatActivity {
 
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
 
         findViewById(R.id.btn_sign_in).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,13 +82,13 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     private void doSignIn(final String email, final String password) {
-        progressDialog.show();
+        Helper.showProgressDialog(this, "Loading...");
         FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
+                        Helper.dismissProgressDialog();
                         if (task.isSuccessful()) {
                             SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.EMAIL, email);
                             SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.PASSWORD, password);
