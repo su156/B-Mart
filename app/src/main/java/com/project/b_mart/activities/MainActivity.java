@@ -1,6 +1,7 @@
 package com.project.b_mart.activities;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -26,6 +29,7 @@ import com.project.b_mart.fragments.FavouriteFragment;
 import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
 import com.project.b_mart.models.NavigationItem;
+import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
@@ -79,6 +83,17 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         });
 
         selectItem(0);
+
+        requestRequirePermissions();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == Constants.PERMISSIONS_REQUEST_CODE) {
+            requestRequirePermissions();
+        }
     }
 
     @Override
@@ -184,5 +199,19 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         startActivity(new Intent(this, SignInActivity.class));
         finishAffinity();
+    }
+
+    private boolean isAllPermissionsGranted() {
+        boolean hasPermissions = true;
+        for (String permission : Constants.PERMISSIONS) {
+            hasPermissions &= ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+        }
+        return hasPermissions;
+    }
+
+    private void requestRequirePermissions() {
+        if (!isAllPermissionsGranted()) {
+            ActivityCompat.requestPermissions(this, Constants.PERMISSIONS.toArray(new String[0]), Constants.PERMISSIONS_REQUEST_CODE);
+        }
     }
 }
