@@ -1,6 +1,10 @@
 package com.project.b_mart.models;
 
+import com.google.firebase.database.DataSnapshot;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Item implements Serializable {
     private String id;
@@ -119,5 +123,13 @@ public class Item implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public static List<Item> parseItemList(DataSnapshot dataSnapshot) {
+        List<Item> items = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            items.add(snapshot.getValue(Item.class));
+        }
+        return items;
     }
 }

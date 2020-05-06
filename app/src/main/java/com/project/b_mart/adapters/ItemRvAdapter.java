@@ -70,7 +70,7 @@ public class ItemRvAdapter extends RecyclerView.Adapter<ItemRvAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return filterDataSet.size();
+        return filterDataSet == null ? 0 : filterDataSet.size();
     }
 
     @Override

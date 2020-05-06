@@ -14,13 +14,20 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemDetailsActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 
 import java.util.ArrayList;
@@ -28,12 +35,15 @@ import java.util.List;
 
 public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener,
         TextWatcher {
-    private Spinner spnCategory;
     private Spinner spnSubCategory;
     private EditText edtSearch;
     private ItemRvAdapter adapter;
     private String topCategory;
     private String subCategory;
+
+    private boolean fetchItems;
+    private boolean isAuto;
+    private List<Item> items;
 
     public ShoppingFragment(String topCategory, String subCategory) {
         this.topCategory = topCategory;
@@ -46,7 +56,7 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
 
         View rootView = inflater.inflate(R.layout.fragment_shopping, container, false);
 
-        spnCategory = rootView.findViewById(R.id.spn_category);
+        Spinner spnCategory = rootView.findViewById(R.id.spn_category);
         spnSubCategory = rootView.findViewById(R.id.spn_sub_category);
         edtSearch = rootView.findViewById(R.id.edt_search);
         RecyclerView rv = rootView.findViewById(R.id.rv);
@@ -74,7 +84,7 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                edtSearch.setText("");
+                fetchItems = true;
 
                 topCategory = topCategories[position];
 
@@ -89,13 +99,9 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         spnSubCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                edtSearch.setText("");
-
                 subCategory = (String) spnSubCategory.getItemAtPosition(position);
-
-                Toast.makeText(getContext(), subCategory, Toast.LENGTH_SHORT).show();
-
-                // TODO: 5/3/2020 call api
+                isAuto = true;
+                edtSearch.setText("");
             }
 
             @Override
@@ -111,9 +117,29 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
             rv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
 
-        adapter.setDataSet(generateItems());
-
         return rootView;
+    }
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        if (isAuto) {
+            if (fetchItems) {
+                fetchItems = false;
+                fetchItems();
+            } else {
+                filterItems();
+            }
+        } else {
+            adapter.getFilter().filter(s);
+        }
     }
 
     @Override
@@ -166,16 +192,37 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         return dataSet;
     }
 
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+    private void fetchItems() {
+        Helper.showProgressDialog(getContext(), "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
+                .orderByChild("category").equalTo(topCategory)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+
+                        items = Item.parseItemList(dataSnapshot);
+
+                        filterItems();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-    }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        adapter.getFilter().filter(s);
+    private void filterItems() {
+        List<Item> filteredItems = new ArrayList<>();
+        if (subCategory.equals(getString(R.string.all))) {
+            filteredItems.addAll(items);
+        } else {
+            for (Item i : items) {
+                if (subCategory.equals(i.getSubCategory())) {
+                    filteredItems.add(i);
+                }
+            }
+        }
+        adapter.setDataSet(filteredItems);
     }
 }
