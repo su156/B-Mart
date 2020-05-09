@@ -12,12 +12,11 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.BitmapUtils;
-import com.project.b_mart.utils.ImagePickerUtils;
 
 public class ItemDetailsActivity extends AppCompatActivity {
     private static Item item;
     private ImageView imageView;
-    private TextView tvPrice, tvPhone, tvAddress, tvDescription;
+    private TextView tvStatus, tvPrice, tvPhone, tvAddress, tvDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +36,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         findViewById(R.id.edit).setVisibility(View.GONE);
 
         imageView = findViewById(R.id.img_view);
+        tvStatus = findViewById(R.id.tv_status);
         tvPrice = findViewById(R.id.tv_price);
         tvPhone = findViewById(R.id.tv_phone);
         tvAddress = findViewById(R.id.tv_address);
@@ -67,6 +67,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     private void fillUpDataToUI() {
         imageView.setImageBitmap(BitmapUtils.base64StringToBitmap(item.getPhotoString()));
+        tvStatus.setText(item.isNew() ? getString(R.string.new_) : getString(R.string.old));
         tvPrice.setText(item.getPrice());
         tvPhone.setText(item.getPhone());
         tvAddress.setText(item.getAddress());

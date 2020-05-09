@@ -13,27 +13,18 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <RadioGroup
+        <TextView
+            style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="16dp"
+            android:text="@string/status" />
 
-            <RadioButton
-                android:id="@+id/rdb_old"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:enabled="false"
-                android:text="@string/old" />
-
-            <RadioButton
-                android:id="@+id/rdb_new"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:enabled="false"
-                android:text="@string/label_new" />
-
-        </RadioGroup>
+        <TextView
+            android:id="@+id/tv_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
 
         <TextView
             style="@style/TextAppearance.AppCompat.Caption"

@@ -26,6 +26,8 @@
     <string name="all">All</string>
     <string name="add_gps_location">Add GPS location</string>
     <string name="title_activity_maps">Map</string>
+    <string name="status">Status</string>
+    <string name="new_">New</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>
