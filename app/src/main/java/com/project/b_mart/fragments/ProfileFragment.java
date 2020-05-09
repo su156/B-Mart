@@ -17,9 +17,12 @@ import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemEditorActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.utils.Helper;
 
 public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener {
     private ItemRvAdapter adapter;
+
+    private FirebaseUser user;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -27,7 +30,7 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
 
         View rootView = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null) {
             TextView tvName = rootView.findViewById(R.id.tv_name);
@@ -65,6 +68,6 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
     }
 
     private void fetchData() {
-        adapter.setDataSet(ShoppingFragment.generateItems());
+        adapter.setDataSet(Helper.getItemListBySellerId(user.getUid()));
     }
 }

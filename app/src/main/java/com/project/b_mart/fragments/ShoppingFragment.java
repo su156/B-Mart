@@ -161,22 +161,6 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         }
     }
 
-    static List<Item> generateItems() {
-        List<Item> dataSet = new ArrayList<>();
-
-        for (int i = 0; i < 100; i++) {
-            Item item = new Item();
-            item.setName("Name " + i);
-            item.setPhone("Phone " + i);
-            item.setPrice("$" + i);
-            item.setAddress("Address " + i);
-            item.setDescription("Description " + i);
-            dataSet.add(item);
-        }
-
-        return dataSet;
-    }
-
     private void filterItems() {
         adapter.setDataSet(subCategory.equals(getString(R.string.all))
                 ? Helper.getItemListByTopCategory(topCategory)

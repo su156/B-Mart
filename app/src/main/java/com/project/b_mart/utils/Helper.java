@@ -75,6 +75,18 @@ public class Helper {
         return list;
     }
 
+    public static List<Item> getItemListBySellerId(String sellerId) {
+        List<Item> list = new ArrayList<>();
+
+        for (Item item : itemList) {
+            if (item.getSellerId().equals(sellerId)) {
+                list.add(item);
+            }
+        }
+
+        return list;
+    }
+
     public static void showProgressDialog(Context context, String title) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(title);
