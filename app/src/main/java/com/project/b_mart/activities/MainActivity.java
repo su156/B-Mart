@@ -35,6 +35,7 @@ import com.project.b_mart.fragments.ProfileFragment;
 import com.project.b_mart.fragments.FavouriteFragment;
 import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
+import com.project.b_mart.models.Item;
 import com.project.b_mart.models.NavigationItem;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
@@ -237,9 +238,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.setFavList(Helper.parseStringList(dataSnapshot));
+
+                        fetchItems();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
+    }
+
+    private void fetchItems() {
+        FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Helper.dismissProgressDialog();
 
-                        Helper.setFavList(Helper.parseStringList(dataSnapshot));
+                        Helper.setItemList(Item.parseItemList(dataSnapshot));
                     }
 
                     @Override

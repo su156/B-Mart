@@ -14,6 +14,7 @@ import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemDetailsActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.utils.Helper;
 
 public class FavouriteFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener {
     private ItemRvAdapter adapter;
@@ -32,9 +33,14 @@ public class FavouriteFragment extends BaseFragment implements ItemRvAdapter.OnL
             rv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
 
-        fetchData();
-
         return rootView;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        fetchData();
     }
 
     @Override
@@ -49,6 +55,6 @@ public class FavouriteFragment extends BaseFragment implements ItemRvAdapter.OnL
     }
 
     private void fetchData() {
-        adapter.setDataSet(ShoppingFragment.generateItems());
+        adapter.setDataSet(Helper.getFavItemList());
     }
 }

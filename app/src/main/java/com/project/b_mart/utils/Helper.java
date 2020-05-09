@@ -5,12 +5,16 @@ import android.content.Context;
 
 import com.google.firebase.database.DataSnapshot;
 import com.project.b_mart.R;
+import com.project.b_mart.models.Item;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class Helper {
     private static Set<String> favList = new HashSet<>();
+    private static List<Item> itemList = new ArrayList<>();
     private static ProgressDialog progressDialog;
 
     public static Set<String> getFavList() {
@@ -26,6 +30,24 @@ public class Helper {
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
             list.add(snapshot.getValue(String.class));
         }
+        return list;
+    }
+
+    public static void setItemList(List<Item> itemList) {
+        Helper.itemList = itemList;
+    }
+
+    public static List<Item> getFavItemList() {
+        List<Item> list = new ArrayList<>();
+
+        for (Item item : itemList) {
+            for (String itemId : favList) {
+                if (item.getId().equals(itemId)) {
+                    list.add(item);
+                }
+            }
+        }
+
         return list;
     }
 
