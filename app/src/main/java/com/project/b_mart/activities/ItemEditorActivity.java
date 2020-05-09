@@ -207,6 +207,11 @@ public class ItemEditorActivity extends AppCompatActivity {
             return;
         }
 
+        if (!topCategory.equals(getString(R.string.others)) && subCategory.equals(getString(R.string.all))) {
+            Toast.makeText(this, "Please choose sub category!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         DatabaseReference itemTable = FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE);
 
         if (TextUtils.isEmpty(item.getId())) {

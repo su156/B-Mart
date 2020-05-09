@@ -26,7 +26,7 @@ import com.project.b_mart.utils.Helper;
 public class ItemDetailsActivity extends AppCompatActivity {
     private static Item item;
     private ImageView imageView;
-    private TextView tvStatus, tvPrice, tvPhone, tvAddress, tvDescription;
+    private TextView tvTopCategory, tvSubCategory, tvStatus, tvPrice, tvPhone, tvAddress, tvDescription;
     private FloatingActionButton fab;
 
     private DatabaseReference favTable;
@@ -49,6 +49,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
         findViewById(R.id.edit).setVisibility(View.GONE);
 
         imageView = findViewById(R.id.img_view);
+        tvTopCategory = findViewById(R.id.tv_top_category);
+        tvSubCategory = findViewById(R.id.tv_sub_category);
         tvStatus = findViewById(R.id.tv_status);
         tvPrice = findViewById(R.id.tv_price);
         tvPhone = findViewById(R.id.tv_phone);
@@ -94,6 +96,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
     private void fillUpDataToUI() {
         imageView.setImageBitmap(BitmapUtils.base64StringToBitmap(item.getPhotoString()));
+        tvTopCategory.setText(item.getCategory());
+        tvSubCategory.setText(item.getSubCategory());
         tvStatus.setText(item.isNew() ? getString(R.string.new_) : getString(R.string.old));
         tvPrice.setText(item.getPrice());
         tvPhone.setText(item.getPhone());
