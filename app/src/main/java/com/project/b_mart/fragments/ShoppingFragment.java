@@ -14,20 +14,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemDetailsActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
-import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 
 import java.util.ArrayList;
@@ -41,9 +34,7 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
     private String topCategory;
     private String subCategory;
 
-    private boolean fetchItems;
     private boolean isAuto;
-    private List<Item> items;
 
     public ShoppingFragment(String topCategory, String subCategory) {
         this.topCategory = topCategory;
@@ -84,8 +75,6 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                fetchItems = true;
-
                 topCategory = topCategories[position];
 
                 onTopCategorySelected(topCategory);
@@ -131,12 +120,8 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
     @Override
     public void afterTextChanged(Editable s) {
         if (isAuto) {
-            if (fetchItems) {
-                fetchItems = false;
-                fetchItems();
-            } else {
-                filterItems();
-            }
+            isAuto = false;
+            filterItems();
         } else {
             adapter.getFilter().filter(s);
         }
@@ -192,37 +177,9 @@ public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnLi
         return dataSet;
     }
 
-    private void fetchItems() {
-        Helper.showProgressDialog(getContext(), "Loading...");
-        FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
-                .orderByChild("category").equalTo(topCategory)
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Helper.dismissProgressDialog();
-
-                        items = Item.parseItemList(dataSnapshot);
-
-                        filterItems();
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-                    }
-                });
-    }
-
     private void filterItems() {
-        List<Item> filteredItems = new ArrayList<>();
-        if (subCategory.equals(getString(R.string.all))) {
-            filteredItems.addAll(items);
-        } else {
-            for (Item i : items) {
-                if (subCategory.equals(i.getSubCategory())) {
-                    filteredItems.add(i);
-                }
-            }
-        }
-        adapter.setDataSet(filteredItems);
+        adapter.setDataSet(subCategory.equals(getString(R.string.all))
+                ? Helper.getItemListByTopCategory(topCategory)
+                : Helper.getItemListByTopCategoryAndSubCategory(topCategory, subCategory));
     }
 }

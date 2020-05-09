@@ -51,6 +51,30 @@ public class Helper {
         return list;
     }
 
+    public static List<Item> getItemListByTopCategory(String topCategory) {
+        List<Item> list = new ArrayList<>();
+
+        for (Item item : itemList) {
+            if (item.getCategory().equals(topCategory)) {
+                list.add(item);
+            }
+        }
+
+        return list;
+    }
+
+    public static List<Item> getItemListByTopCategoryAndSubCategory(String topCategory, String subCategory) {
+        List<Item> list = new ArrayList<>();
+
+        for (Item item : itemList) {
+            if (item.getCategory().equals(topCategory) && item.getSubCategory().equals(subCategory)) {
+                list.add(item);
+            }
+        }
+
+        return list;
+    }
+
     public static void showProgressDialog(Context context, String title) {
         progressDialog = new ProgressDialog(context);
         progressDialog.setMessage(title);
