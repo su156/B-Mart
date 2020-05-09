@@ -21,6 +21,7 @@ import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.BitmapUtils;
 import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 
 public class ItemDetailsActivity extends AppCompatActivity {
     private static Item item;
@@ -55,13 +56,18 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvDescription = findViewById(R.id.tv_description);
 
         fab = findViewById(R.id.fab);
-        fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 5/3/2020 save to fav list
+                if (Helper.getFavList().contains(item.getId())) {
+                    removeFromFavList();
+                } else {
+                    addToFavList();
+                }
             }
         });
+
+        changeFavIconAndFavList(Helper.getFavList().contains(item.getId()));
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -70,7 +76,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
             return;
         }
         favTable = FirebaseDatabase.getInstance().getReference(Constants.FAV_TABLE)
-                .child(user.getUid());
+                .child(user.getUid()).child(item.getId());
 
         fillUpDataToUI();
     }
@@ -100,7 +106,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        changeFavIcon(!task.isSuccessful());
+                        changeFavIconAndFavList(!task.isSuccessful());
                     }
                 });
     }
@@ -110,14 +116,20 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        changeFavIcon(task.isSuccessful());
+                        changeFavIconAndFavList(task.isSuccessful());
                     }
                 });
     }
 
-    private void changeFavIcon(boolean isFav) {
+    private void changeFavIconAndFavList(boolean isFav) {
         fab.setImageDrawable(getResources().getDrawable(isFav
                 ? R.drawable.ic_favorite_black_24dp
                 : R.drawable.ic_favorite_border_black_24dp));
+
+        if (isFav) {
+            Helper.getFavList().add(item.getId());
+        } else {
+            Helper.getFavList().remove(item.getId());
+        }
     }
 }

@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
@@ -20,6 +21,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.DrawerItemCustomAdapter;
 import com.project.b_mart.fragments.ContactUsFragment;
@@ -30,6 +37,7 @@ import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
 import com.project.b_mart.models.NavigationItem;
 import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
@@ -212,6 +220,32 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     private void requestRequirePermissions() {
         if (!isAllPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, Constants.PERMISSIONS.toArray(new String[0]), Constants.PERMISSIONS_REQUEST_CODE);
+        } else {
+            fetchFavList();
         }
+    }
+
+    private void fetchFavList() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        Helper.showProgressDialog(this, "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.FAV_TABLE).child(user.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+
+                        Helper.setFavList(Helper.parseStringList(dataSnapshot));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
     }
 }
