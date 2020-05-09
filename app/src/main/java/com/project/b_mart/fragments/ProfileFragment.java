@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemEditorActivity;
+import com.project.b_mart.activities.ProfileEditorActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.Helper;
@@ -50,6 +51,13 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
         if (getContext() != null) {
             rv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
+
+        rootView.findViewById(R.id.layout_profile).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getContext(), ProfileEditorActivity.class));
+            }
+        });
 
         fetchData();
 
