@@ -3,7 +3,6 @@ package com.project.b_mart.activities;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -14,12 +13,16 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.b_mart.R;
+import com.project.b_mart.models.User;
+import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class SignUpActivity extends AppCompatActivity {
     private EditText edtEmail, edtPassword, edtConfirmPassword;
-    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +32,6 @@ public class SignUpActivity extends AppCompatActivity {
         edtEmail = findViewById(R.id.edt_email);
         edtPassword = findViewById(R.id.edt_password);
         edtConfirmPassword = findViewById(R.id.edt_confirm_password);
-
-        progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage("Loading...");
-        progressDialog.setCancelable(false);
 
         findViewById(R.id.btn_sign_up).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,23 +73,47 @@ public class SignUpActivity extends AppCompatActivity {
     }
 
     private void doSignUp(final String email, final String password) {
-        progressDialog.show();
+        Helper.showProgressDialog(this, "Loading...");
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        progressDialog.dismiss();
                         if (task.isSuccessful()) {
                             SharedPreferencesUtils.saveString(SignUpActivity.this, SharedPreferencesUtils.EMAIL, email);
                             SharedPreferencesUtils.saveString(SignUpActivity.this, SharedPreferencesUtils.PASSWORD, password);
-                            setResult(RESULT_OK);
-                            finish();
+
+                            saveUserData();
                         } else {
+                            Helper.dismissProgressDialog();
                             Toast.makeText(SignUpActivity.this,
                                     "Cannot create account. Try again!",
                                     Toast.LENGTH_SHORT).show();
                         }
+                    }
+                });
+    }
+
+    private void saveUserData() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Helper.dismissProgressDialog();
+            Toast.makeText(this, "Fail to save user data!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        User u = new User();
+        u.setUid(user.getUid());
+        u.setEmail(user.getEmail());
+
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .setValue(u)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        Helper.dismissProgressDialog();
+                        setResult(RESULT_OK);
+                        finish();
                     }
                 });
     }

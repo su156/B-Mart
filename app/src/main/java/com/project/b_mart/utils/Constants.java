@@ -13,6 +13,7 @@ public class Constants {
     public static final String RESULT_LAT_AND_LONG = "RESULT_LAT_AND_LONG";
     public static final String ITEM_TABLE = "item-table";
     public static final String FAV_TABLE = "fav-table";
+    public static final String USER_TABLE = "user-table";
 
     public static final List<String> PERMISSIONS = Arrays.asList(
             Manifest.permission.ACCESS_COARSE_LOCATION,

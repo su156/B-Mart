@@ -1,11 +1,12 @@
 package com.project.b_mart.models;
 
-import android.net.Uri;
-
 public class User {
     private String uid;
-    private Uri profileUri;
+    private String profileImageStr;
     private String name;
+    private String phone;
+    private String email;
+    private String address;
 
     public String getUid() {
         return uid;
@@ -15,12 +16,12 @@ public class User {
         this.uid = uid;
     }
 
-    public Uri getProfileUri() {
-        return profileUri;
+    public String getProfileImageStr() {
+        return profileImageStr;
     }
 
-    public void setProfileUri(Uri profileUri) {
-        this.profileUri = profileUri;
+    public void setProfileImageStr(String profileImageStr) {
+        this.profileImageStr = profileImageStr;
     }
 
     public String getName() {
@@ -29,5 +30,29 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
     }
 }

@@ -16,9 +16,6 @@ import com.project.b_mart.R;
 import com.project.b_mart.adapters.UserAdapter;
 import com.project.b_mart.models.User;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class UserListFragment extends BaseFragment implements UserAdapter.OnListItemClickListener, TextWatcher {
     private UserAdapter adapter;
 
@@ -71,19 +68,6 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
     }
 
     private void fetchData() {
-        adapter.setDataSet(getUsers());
-    }
-
-    private List<User> getUsers() {
-        List<User> users = new ArrayList<>();
-
-        for (int i = 0; i < 100; i++) {
-            User user = new User();
-            user.setUid("Uid " + i);
-            user.setName("Name " + i);
-            users.add(user);
-        }
-
-        return users;
+        // adapter.setDataSet();
     }
 }

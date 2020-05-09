@@ -5,25 +5,38 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemEditorActivity;
 import com.project.b_mart.activities.ProfileEditorActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.models.User;
+import com.project.b_mart.utils.BitmapUtils;
+import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 
 public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener {
     private ItemRvAdapter adapter;
 
     private FirebaseUser user;
+    private User userData;
+
+    private ImageView imgProfile;
+    private TextView tvName, tvEmail, tvPhone;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -33,16 +46,10 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
 
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null) {
-            TextView tvName = rootView.findViewById(R.id.tv_name);
-            tvName.setText(user.getDisplayName());
-
-            TextView tvEmail = rootView.findViewById(R.id.tv_email);
-            tvEmail.setText(user.getEmail());
-
-            TextView tvPhone = rootView.findViewById(R.id.tv_phone);
-            tvPhone.setText(user.getPhoneNumber());
-        }
+        imgProfile = rootView.findViewById(R.id.img_profile);
+        tvName = rootView.findViewById(R.id.tv_name);
+        tvEmail = rootView.findViewById(R.id.tv_email);
+        tvPhone = rootView.findViewById(R.id.tv_phone);
 
         RecyclerView rv = rootView.findViewById(R.id.rv);
 
@@ -55,11 +62,14 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
         rootView.findViewById(R.id.layout_profile).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ProfileEditorActivity.setUser(userData);
                 startActivity(new Intent(getContext(), ProfileEditorActivity.class));
             }
         });
 
         fetchData();
+
+        fetchUserData();
 
         return rootView;
     }
@@ -77,5 +87,32 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
 
     private void fetchData() {
         adapter.setDataSet(Helper.getItemListBySellerId(user.getUid()));
+    }
+
+    private void fetchUserData() {
+        Helper.showProgressDialog(getContext(), "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+
+                        userData = dataSnapshot.getValue(User.class);
+
+                        fillUpDataToUI();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
+    }
+
+    private void fillUpDataToUI() {
+        imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
+        tvName.setText(userData.getName());
+        tvEmail.setText(user.getEmail());
+        tvPhone.setText(userData.getPhone());
     }
 }
