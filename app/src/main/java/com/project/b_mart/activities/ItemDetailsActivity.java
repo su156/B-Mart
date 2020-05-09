@@ -1,5 +1,6 @@
 package com.project.b_mart.activities;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -7,16 +8,27 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.BitmapUtils;
+import com.project.b_mart.utils.Constants;
 
 public class ItemDetailsActivity extends AppCompatActivity {
     private static Item item;
     private ImageView imageView;
     private TextView tvStatus, tvPrice, tvPhone, tvAddress, tvDescription;
+    private FloatingActionButton fab;
+
+    private DatabaseReference favTable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +54,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvAddress = findViewById(R.id.tv_address);
         tvDescription = findViewById(R.id.tv_description);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        fab = findViewById(R.id.fab);
         fab.setImageDrawable(getResources().getDrawable(R.drawable.ic_favorite_border_black_24dp));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -50,6 +62,15 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 // TODO: 5/3/2020 save to fav list
             }
         });
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        favTable = FirebaseDatabase.getInstance().getReference(Constants.FAV_TABLE)
+                .child(user.getUid());
 
         fillUpDataToUI();
     }
@@ -72,5 +93,31 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvPhone.setText(item.getPhone());
         tvAddress.setText(item.getAddress());
         tvDescription.setText(item.getDescription());
+    }
+
+    private void removeFromFavList() {
+        favTable.removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        changeFavIcon(!task.isSuccessful());
+                    }
+                });
+    }
+
+    private void addToFavList() {
+        favTable.setValue(item.getId())
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        changeFavIcon(task.isSuccessful());
+                    }
+                });
+    }
+
+    private void changeFavIcon(boolean isFav) {
+        fab.setImageDrawable(getResources().getDrawable(isFav
+                ? R.drawable.ic_favorite_black_24dp
+                : R.drawable.ic_favorite_border_black_24dp));
     }
 }
