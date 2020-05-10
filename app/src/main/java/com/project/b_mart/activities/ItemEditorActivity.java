@@ -4,9 +4,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -38,7 +45,7 @@ import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.ImagePickerUtils;
 
-public class ItemEditorActivity extends AppCompatActivity {
+public class ItemEditorActivity extends AppCompatActivity implements LocationListener {
     private static Item item;
     private String topCategory;
     private String subCategory;
@@ -210,6 +217,7 @@ public class ItemEditorActivity extends AppCompatActivity {
         edtPrice.setText(item.getPrice());
         edtPhone.setText(phone);
         edtAddress.setText(address);
+        tvLocation.setText(String.format("%s, %s", item.getLocationLatitude(), item.getLocationLongitude()));
         edtDescription.setText(item.getDescription());
     }
 
@@ -290,11 +298,15 @@ public class ItemEditorActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        Helper.dismissProgressDialog();
-
                         userData = dataSnapshot.getValue(User.class);
 
-                        fillUpDataToUI();
+                        if (TextUtils.isEmpty(item.getId())) {
+                            findCurrentLocation();
+                        } else {
+                            Helper.dismissProgressDialog();
+
+                            fillUpDataToUI();
+                        }
                     }
 
                     @Override
@@ -302,5 +314,37 @@ public class ItemEditorActivity extends AppCompatActivity {
                         Helper.dismissProgressDialog();
                     }
                 });
+    }
+
+    private void findCurrentLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (locationManager != null &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+        }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        if (item != null && item.getLocationLatitude() == 0 && item.getLocationLongitude() == 0) {
+            Helper.dismissProgressDialog();
+            item.setLocationLatitude(location.getLatitude());
+            item.setLocationLongitude(location.getLongitude());
+
+            fillUpDataToUI();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
     }
 }
