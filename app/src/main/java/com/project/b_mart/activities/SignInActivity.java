@@ -96,6 +96,7 @@ public class SignInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        Helper.setIsSystemAdmin(Constants.SYSTEM_ADMIN_EMAIL.equals(email));
                         if (task.isSuccessful() && user != null) {
                             isUserNotBlocked(user, password);
                         } else {
@@ -118,7 +119,7 @@ public class SignInActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Helper.dismissProgressDialog();
                         User userData = dataSnapshot.getValue(User.class);
-                        if (userData != null && !userData.isBlocked()) {
+                        if ((userData != null && !userData.isBlocked()) || Helper.isIsSystemAdmin()) {
                             SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.EMAIL, user.getEmail());
                             SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.PASSWORD, password);
 

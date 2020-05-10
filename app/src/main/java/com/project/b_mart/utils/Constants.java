@@ -14,6 +14,7 @@ public class Constants {
     public static final String ITEM_TABLE = "item-table";
     public static final String FAV_TABLE = "fav-table";
     public static final String USER_TABLE = "user-table";
+    public static final String SYSTEM_ADMIN_EMAIL = "systemadmin@gmail.com";
 
     public static final List<String> PERMISSIONS = Arrays.asList(
             Manifest.permission.ACCESS_COARSE_LOCATION,

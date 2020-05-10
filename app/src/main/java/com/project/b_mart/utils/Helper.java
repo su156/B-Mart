@@ -18,6 +18,7 @@ public class Helper {
     private static Set<String> favList = new HashSet<>();
     private static List<Item> itemList = new ArrayList<>();
     private static ProgressDialog progressDialog;
+    private static boolean isSystemAdmin;
 
     public static Set<String> getFavList() {
         return favList;
@@ -126,5 +127,13 @@ public class Helper {
             builder.setNegativeButton(R.string.cancel, onCancel);
         }
         builder.create().show();
+    }
+
+    public static boolean isIsSystemAdmin() {
+        return isSystemAdmin;
+    }
+
+    public static void setIsSystemAdmin(boolean isSystemAdmin) {
+        Helper.isSystemAdmin = isSystemAdmin;
     }
 }

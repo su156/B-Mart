@@ -44,6 +44,7 @@ import com.project.b_mart.utils.SharedPreferencesUtils;
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
     private CharSequence title;
     private String[] mNavigationDrawerItemTitles;
+    private NavigationItem[] drawerItem;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
@@ -68,14 +69,23 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         setupToolbar();
 
-        NavigationItem[] drawerItem = new NavigationItem[7];
-        drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
-        drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
-        drawerItem[2] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
-        drawerItem[3] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
-        drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
-        drawerItem[5] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
-        drawerItem[6] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 7 : 6];
+        if (Helper.isIsSystemAdmin()) {
+            drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
+            drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
+            drawerItem[2] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
+            drawerItem[3] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
+            drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
+            drawerItem[5] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
+            drawerItem[6] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+        } else {
+            drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
+            drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
+            drawerItem[2] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
+            drawerItem[3] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
+            drawerItem[4] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
+            drawerItem[5] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+        }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.layout_drawer_item, drawerItem);
         mDrawerList.setAdapter(adapter);
@@ -84,12 +94,16 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         setupDrawerToggle();
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, ItemEditorActivity.class));
-            }
-        });
+        if (Helper.isIsSystemAdmin()) {
+            fab.setVisibility(View.GONE);
+        } else {
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(MainActivity.this, ItemEditorActivity.class));
+                }
+            });
+        }
 
         selectItem(0);
 
@@ -148,35 +162,58 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
     private void selectItem(int position, String topCategory, String subCategory) {
         Fragment fragment;
-        switch (position) {
-            case 0:
-                fragment = new HomeFragment();
-                break;
-            case 1:
-                fragment = new ProfileFragment();
-                break;
-            case 2:
-                fragment = new UserListFragment();
-                break;
-            case 3:
-                fragment = new FavouriteFragment();
-                break;
-            case 4:
-                fragment = new ShoppingFragment(topCategory, subCategory);
-                break;
-            case 5:
-                fragment = new ContactUsFragment();
-                break;
-            default:
-                signOut();
-                return;
+        if (Helper.isIsSystemAdmin()) {
+            switch (position) {
+                case 0:
+                    fragment = new HomeFragment();
+                    break;
+                case 1:
+                    fragment = new ProfileFragment();
+                    break;
+                case 2:
+                    fragment = new UserListFragment();
+                    break;
+                case 3:
+                    fragment = new FavouriteFragment();
+                    break;
+                case 4:
+                    fragment = new ShoppingFragment(topCategory, subCategory);
+                    break;
+                case 5:
+                    fragment = new ContactUsFragment();
+                    break;
+                default:
+                    signOut();
+                    return;
+            }
+        } else {
+            switch (position) {
+                case 0:
+                    fragment = new HomeFragment();
+                    break;
+                case 1:
+                    fragment = new ProfileFragment();
+                    break;
+                case 2:
+                    fragment = new FavouriteFragment();
+                    break;
+                case 3:
+                    fragment = new ShoppingFragment(topCategory, subCategory);
+                    break;
+                case 4:
+                    fragment = new ContactUsFragment();
+                    break;
+                default:
+                    signOut();
+                    return;
+            }
         }
 
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         mDrawerList.setItemChecked(position, true);
         mDrawerList.setSelection(position);
-        setTitle(mNavigationDrawerItemTitles[position]);
+        setTitle(drawerItem[position].getName());
         mDrawerLayout.closeDrawer(mDrawerList);
     }
 
@@ -199,6 +236,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     }
 
     public void setFavVisibility(int visibility) {
+        if (Helper.isIsSystemAdmin()) {
+            return;
+        }
         fab.setVisibility(visibility);
     }
 
