@@ -59,6 +59,14 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvLocation = findViewById(R.id.tv_location_2);
         tvDescription = findViewById(R.id.tv_description);
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoDetailsActivity.setBm(BitmapUtils.base64StringToBitmap(item.getPhotoString()));
+                startActivity(new Intent(ItemDetailsActivity.this, PhotoDetailsActivity.class));
+            }
+        });
+
         fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

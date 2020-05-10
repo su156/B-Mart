@@ -16,6 +16,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
+        <activity
+            android:name=".activities.PhotoDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ProfileEditorActivity" />
         <activity
             android:name=".activities.MapsActivity"
