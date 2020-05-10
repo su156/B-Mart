@@ -26,6 +26,9 @@ import com.project.b_mart.models.User;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UserListFragment extends BaseFragment implements UserAdapter.OnListItemClickListener, TextWatcher {
     private UserAdapter adapter;
 
@@ -69,7 +72,6 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
 
     @Override
     public void onClick(int position, User user) {
-        Toast.makeText(getContext(), user.getName(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -106,7 +108,9 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         Helper.dismissProgressDialog();
 
-                        adapter.setDataSet(User.parseUserList(dataSnapshot));
+                        List<User> users = User.parseUserList(dataSnapshot);
+
+                        adapter.setDataSet(removeSystemAdmin(users));
                     }
 
                     @Override
@@ -142,5 +146,19 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
                         Helper.dismissProgressDialog();
                     }
                 });
+    }
+
+    private List<User> removeSystemAdmin(List<User> users) {
+        List<User> list = new ArrayList<>();
+
+        if (users != null && !users.isEmpty()) {
+            for (User u : users) {
+                if (!u.getEmail().equals(Constants.SYSTEM_ADMIN_EMAIL)) {
+                    list.add(u);
+                }
+            }
+        }
+
+        return list;
     }
 }

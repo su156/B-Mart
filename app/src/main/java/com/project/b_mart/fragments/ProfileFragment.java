@@ -2,6 +2,7 @@ package com.project.b_mart.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,7 +111,9 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
     }
 
     private void fillUpDataToUI() {
-        imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
+        if (!TextUtils.isEmpty(userData.getProfileImageStr())) {
+            imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
+        }
         tvName.setText(userData.getName());
         tvEmail.setText(user.getEmail());
         tvPhone.setText(userData.getPhone());

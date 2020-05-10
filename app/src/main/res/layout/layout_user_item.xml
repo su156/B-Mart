@@ -19,18 +19,31 @@
             android:layout_height="match_parent"
             android:layout_margin="3dp"
             android:contentDescription="@string/app_name"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_person_outline_black_24dp" />
 
     </androidx.cardview.widget.CardView>
 
-    <TextView
-        android:id="@+id/tv_name"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="16dp"
-        android:text="@string/name"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv_email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <ImageButton
         android:id="@+id/img_btn_delete"

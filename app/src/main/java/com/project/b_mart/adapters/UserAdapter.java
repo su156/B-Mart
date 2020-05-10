@@ -1,5 +1,6 @@
 package com.project.b_mart.adapters;
 
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.project.b_mart.R;
 import com.project.b_mart.models.User;
+import com.project.b_mart.utils.BitmapUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,11 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
         final int index = holder.getAbsoluteAdapterPosition();
         final User user = filteredDataSet.get(index);
 
-        // holder.imgProfile.setImageBitmap();
+        if (!TextUtils.isEmpty(user.getProfileImageStr())) {
+            holder.imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(user.getProfileImageStr()));
+        }
         holder.tvName.setText(user.getName());
+        holder.tvEmail.setText(user.getEmail());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,7 +111,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgProfile;
-        private TextView tvName;
+        private TextView tvName, tvEmail;
         private ImageButton imgBtn;
 
         ViewHolder(@NonNull View itemView) {
@@ -114,6 +119,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
             imgProfile = itemView.findViewById(R.id.img_profile);
             tvName = itemView.findViewById(R.id.tv_name);
+            tvEmail = itemView.findViewById(R.id.tv_email);
             imgBtn = itemView.findViewById(R.id.img_btn_delete);
         }
     }
