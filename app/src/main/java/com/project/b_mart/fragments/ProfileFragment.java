@@ -68,7 +68,9 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
             }
         });
 
-        fetchData();
+        if (!Helper.isIsSystemAdmin()) {
+            fetchData();
+        }
 
         fetchUserData();
 

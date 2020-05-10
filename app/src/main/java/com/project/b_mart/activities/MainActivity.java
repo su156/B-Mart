@@ -69,15 +69,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         setupToolbar();
 
-        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 7 : 6];
+        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 3 : 6];
         if (Helper.isIsSystemAdmin()) {
-            drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
-            drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
-            drawerItem[2] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
-            drawerItem[3] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
-            drawerItem[4] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
-            drawerItem[5] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
-            drawerItem[6] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+            drawerItem[0] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
+            drawerItem[1] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
+            drawerItem[2] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
         } else {
             drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
             drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
@@ -122,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     @Override
     public void onSubCategorySelected(String topCategory, String subCategory) {
         // 4 is Shopping fragment's position
-        selectItem(4, topCategory, subCategory);
+        selectItem(3, topCategory, subCategory);
     }
 
     @Override
@@ -165,22 +161,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         if (Helper.isIsSystemAdmin()) {
             switch (position) {
                 case 0:
-                    fragment = new HomeFragment();
-                    break;
-                case 1:
                     fragment = new ProfileFragment();
                     break;
-                case 2:
+                case 1:
                     fragment = new UserListFragment();
-                    break;
-                case 3:
-                    fragment = new FavouriteFragment();
-                    break;
-                case 4:
-                    fragment = new ShoppingFragment(topCategory, subCategory);
-                    break;
-                case 5:
-                    fragment = new ContactUsFragment();
                     break;
                 default:
                     signOut();
@@ -261,7 +245,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     private void requestRequirePermissions() {
         if (!isAllPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, Constants.PERMISSIONS.toArray(new String[0]), Constants.PERMISSIONS_REQUEST_CODE);
-        } else {
+        } else if (!Helper.isIsSystemAdmin()) {
             fetchFavList();
         }
     }
