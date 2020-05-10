@@ -1,5 +1,10 @@
 package com.project.b_mart.models;
 
+import com.google.firebase.database.DataSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class User {
     private String uid;
     private String profileImageStr;
@@ -54,5 +59,13 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public static List<User> parseUserList(DataSnapshot dataSnapshot) {
+        List<User> items = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            items.add(snapshot.getValue(User.class));
+        }
+        return items;
     }
 }

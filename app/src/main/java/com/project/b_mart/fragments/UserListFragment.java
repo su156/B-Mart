@@ -9,12 +9,19 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.UserAdapter;
 import com.project.b_mart.models.User;
+import com.project.b_mart.utils.Constants;
+import com.project.b_mart.utils.Helper;
 
 public class UserListFragment extends BaseFragment implements UserAdapter.OnListItemClickListener, TextWatcher {
     private UserAdapter adapter;
@@ -68,6 +75,20 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
     }
 
     private void fetchData() {
-        // adapter.setDataSet();
+        Helper.showProgressDialog(getContext(), "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+
+                        adapter.setDataSet(User.parseUserList(dataSnapshot));
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
     }
 }
