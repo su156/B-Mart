@@ -25,10 +25,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.models.Item;
+import com.project.b_mart.models.User;
 import com.project.b_mart.utils.BitmapUtils;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
@@ -38,6 +42,9 @@ public class ItemEditorActivity extends AppCompatActivity {
     private static Item item;
     private String topCategory;
     private String subCategory;
+
+    private FirebaseUser user;
+    private User userData;
 
     private ImageView imageView;
     private RadioButton rdbNew;
@@ -49,6 +56,14 @@ public class ItemEditorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item);
+
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Fail to get current user data!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -142,9 +157,9 @@ public class ItemEditorActivity extends AppCompatActivity {
 
         if (item == null) {
             item = new Item();
-        } else {
-            fillUpDataToUI();
         }
+
+        fetchUserData();
     }
 
     @Override
@@ -180,11 +195,21 @@ public class ItemEditorActivity extends AppCompatActivity {
     }
 
     private void fillUpDataToUI() {
+        String phone;
+        String address;
+        if (TextUtils.isEmpty(item.getId())) {
+            phone = userData.getPhone();
+            address = userData.getAddress();
+        } else {
+            phone = item.getPhone();
+            address = item.getAddress();
+        }
+
         imageView.setImageBitmap(BitmapUtils.base64StringToBitmap(item.getPhotoString()));
         edtName.setText(item.getName());
         edtPrice.setText(item.getPrice());
-        edtPhone.setText(item.getPhone());
-        edtAddress.setText(item.getAddress());
+        edtPhone.setText(phone);
+        edtAddress.setText(address);
         edtDescription.setText(item.getDescription());
     }
 
@@ -257,5 +282,25 @@ public class ItemEditorActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private void fetchUserData() {
+        Helper.showProgressDialog(this, "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+
+                        userData = dataSnapshot.getValue(User.class);
+
+                        fillUpDataToUI();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
     }
 }
