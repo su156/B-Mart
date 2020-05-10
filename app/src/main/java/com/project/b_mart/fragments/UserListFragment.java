@@ -1,5 +1,6 @@
 package com.project.b_mart.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -75,15 +76,22 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
     public void onDeleteButtonClick(final int position, final User user) {
         user.setBlocked(true);
 
-        Helper.showProgressDialog(getContext(), "Loading...");
-        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
-                .setValue(user)
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+        Helper.showConfirmDialog(getContext(),
+                getString(R.string.are_you_sure),
+                getString(R.string.block_acc_and_delete_posts_warning_msg, user.getEmail()),
+                // OK button callback
+                new DialogInterface.OnClickListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        adapter.removeItem(position);
-
-                        clearItemsForBlockedUser(user.getUid());
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        deleteUser(position, user);
+                    }
+                },
+                // Cancel button callback
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
                     }
                 });
     }
@@ -104,6 +112,20 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
                         Helper.dismissProgressDialog();
+                    }
+                });
+    }
+
+    private void deleteUser(final int position, final User user) {
+        Helper.showProgressDialog(getContext(), "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .setValue(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        adapter.removeItem(position);
+
+                        clearItemsForBlockedUser(user.getUid());
                     }
                 });
     }

@@ -1,7 +1,9 @@
 package com.project.b_mart.utils;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 
 import com.google.firebase.database.DataSnapshot;
 import com.project.b_mart.R;
@@ -112,5 +114,15 @@ public class Helper {
             subCategoriesId = R.array.others_sub_categories;
         }
         return context.getResources().getStringArray(subCategoriesId);
+    }
+
+    public static void showConfirmDialog(Context context, String title, String message, DialogInterface.OnClickListener onOk, DialogInterface.OnClickListener onCancel) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(R.string.ok, onOk);
+        builder.setNegativeButton(R.string.cancel, onCancel);
+        builder.create().show();
     }
 }
