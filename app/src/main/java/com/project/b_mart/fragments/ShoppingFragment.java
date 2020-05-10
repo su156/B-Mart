@@ -23,9 +23,6 @@ import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.utils.Helper;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ShoppingFragment extends BaseFragment implements ItemRvAdapter.OnListItemClickListener,
         TextWatcher {
     private Spinner spnSubCategory;

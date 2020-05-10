@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -70,13 +72,27 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
     }
 
     @Override
-    public void onDeleteButtonClick(int position, User user) {
-        Toast.makeText(getContext(), user.getUid(), Toast.LENGTH_SHORT).show();
+    public void onDeleteButtonClick(final int position, final User user) {
+        user.setBlocked(true);
+
+        Helper.showProgressDialog(getContext(), "Loading...");
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .setValue(user)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        adapter.removeItem(position);
+
+                        clearItemsForBlockedUser(user.getUid());
+                    }
+                });
     }
 
     private void fetchData() {
         Helper.showProgressDialog(getContext(), "Loading...");
         FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE)
+                .orderByChild("blocked")
+                .equalTo(false)
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -87,6 +103,20 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
+    }
+
+    private void clearItemsForBlockedUser(String uid) {
+        FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
+                .orderByChild("sellerId")
+                .equalTo(uid)
+                .getRef()
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
                         Helper.dismissProgressDialog();
                     }
                 });

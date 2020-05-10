@@ -12,6 +12,7 @@ public class User {
     private String phone;
     private String email;
     private String address;
+    private boolean blocked;
 
     public String getUid() {
         return uid;
@@ -61,11 +62,19 @@ public class User {
         this.address = address;
     }
 
+    public boolean isBlocked() {
+        return blocked;
+    }
+
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
+    }
+
     public static List<User> parseUserList(DataSnapshot dataSnapshot) {
-        List<User> items = new ArrayList<>();
+        List<User> users = new ArrayList<>();
         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-            items.add(snapshot.getValue(User.class));
+            users.add(snapshot.getValue(User.class));
         }
-        return items;
+        return users;
     }
 }

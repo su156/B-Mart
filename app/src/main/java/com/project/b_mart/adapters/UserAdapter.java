@@ -100,6 +100,10 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
         notifyDataSetChanged();
     }
 
+    public void removeItem(int position) {
+        notifyItemRemoved(position);
+    }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         private ImageView imgProfile;
         private TextView tvName;
