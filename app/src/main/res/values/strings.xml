@@ -35,6 +35,8 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="block_acc_and_delete_posts_warning_msg">Block %1$s account and delete all of the posts related to that account.</string>
+    <string name="acc_is_blocked">%1$s acc is blocked!</string>
+    <string name="warning">Warning</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>

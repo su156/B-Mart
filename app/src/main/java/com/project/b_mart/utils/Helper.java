@@ -122,7 +122,9 @@ public class Helper {
         builder.setTitle(title);
         builder.setMessage(message);
         builder.setPositiveButton(R.string.ok, onOk);
-        builder.setNegativeButton(R.string.cancel, onCancel);
+        if (onCancel != null) {
+            builder.setNegativeButton(R.string.cancel, onCancel);
+        }
         builder.create().show();
     }
 }

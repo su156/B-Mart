@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -15,7 +16,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
+import com.project.b_mart.models.User;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.SharedPreferencesUtils;
@@ -88,13 +95,11 @@ public class SignInActivity extends AppCompatActivity {
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Helper.dismissProgressDialog();
-                        if (task.isSuccessful()) {
-                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.EMAIL, email);
-                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.PASSWORD, password);
-
-                            doSignInSuccess();
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        if (task.isSuccessful() && user != null) {
+                            isUserNotBlocked(user, password);
                         } else {
+                            Helper.dismissProgressDialog();
                             Toast.makeText(SignInActivity.this, "Cannot sign in. Try again!", Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -104,5 +109,39 @@ public class SignInActivity extends AppCompatActivity {
     private void doSignInSuccess() {
         startActivity(new Intent(this, MainActivity.class));
         finish();
+    }
+
+    private void isUserNotBlocked(final FirebaseUser user, final String password) {
+        FirebaseDatabase.getInstance().getReference(Constants.USER_TABLE).child(user.getUid())
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.dismissProgressDialog();
+                        User userData = dataSnapshot.getValue(User.class);
+                        if (userData != null && !userData.isBlocked()) {
+                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.EMAIL, user.getEmail());
+                            SharedPreferencesUtils.saveString(SignInActivity.this, SharedPreferencesUtils.PASSWORD, password);
+
+                            doSignInSuccess();
+                        } else {
+                            Helper.showConfirmDialog(SignInActivity.this,
+                                    getString(R.string.warning),
+                                    getString(R.string.acc_is_blocked, user.getEmail()),
+                                    // Ok button callback
+                                    new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    },
+                                    null);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Helper.dismissProgressDialog();
+                    }
+                });
     }
 }
