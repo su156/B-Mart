@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -26,7 +27,7 @@ import com.project.b_mart.utils.Helper;
 public class ItemDetailsActivity extends AppCompatActivity {
     private static Item item;
     private ImageView imageView;
-    private TextView tvTopCategory, tvSubCategory, tvStatus, tvPrice, tvPhone, tvAddress, tvDescription;
+    private TextView tvTopCategory, tvSubCategory, tvStatus, tvPrice, tvPhone, tvAddress, tvLocation, tvDescription;
     private FloatingActionButton fab;
 
     private DatabaseReference favTable;
@@ -55,6 +56,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvPrice = findViewById(R.id.tv_price);
         tvPhone = findViewById(R.id.tv_phone);
         tvAddress = findViewById(R.id.tv_address);
+        tvLocation = findViewById(R.id.tv_location_2);
         tvDescription = findViewById(R.id.tv_description);
 
         fab = findViewById(R.id.fab);
@@ -66,6 +68,14 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 } else {
                     addToFavList();
                 }
+            }
+        });
+
+        tvLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MapsActivity.setLatLng(item.getLocationLatitude(), item.getLocationLongitude());
+                startActivity(new Intent(ItemDetailsActivity.this, MapsActivity.class));
             }
         });
 
@@ -102,6 +112,10 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvPrice.setText(item.getPrice());
         tvPhone.setText(item.getPhone());
         tvAddress.setText(item.getAddress());
+        if (item.getLocationLatitude() > 0 && item.getLocationLongitude() > 0) {
+            tvLocation.setVisibility(View.VISIBLE);
+            tvLocation.setText(String.format("%s, %s", item.getLocationLatitude(), item.getLocationLongitude()));
+        }
         tvDescription.setText(item.getDescription());
     }
 

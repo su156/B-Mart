@@ -92,6 +92,14 @@
             android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/tv_location_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_location_on_black_24dp"
+            android:gravity="center_vertical"
+            android:visibility="gone" />
+
+        <TextView
             style="@style/TextAppearance.AppCompat.Caption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
