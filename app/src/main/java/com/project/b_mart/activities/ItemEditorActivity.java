@@ -129,6 +129,14 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
             topCategory = topCategories[0];
         }
 
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoDetailsActivity.setBm(BitmapUtils.base64StringToBitmap(item.getPhotoString()));
+                startActivity(new Intent(ItemEditorActivity.this, PhotoDetailsActivity.class));
+            }
+        });
+
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {

@@ -22,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.activities.ItemEditorActivity;
+import com.project.b_mart.activities.PhotoDetailsActivity;
 import com.project.b_mart.activities.ProfileEditorActivity;
 import com.project.b_mart.adapters.ItemRvAdapter;
 import com.project.b_mart.models.Item;
@@ -59,6 +60,14 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
         if (getContext() != null) {
             rv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
         }
+
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoDetailsActivity.setBm(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
+                startActivity(new Intent(getContext(), PhotoDetailsActivity.class));
+            }
+        });
 
         rootView.findViewById(R.id.layout_profile).setOnClickListener(new View.OnClickListener() {
             @Override

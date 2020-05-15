@@ -44,6 +44,14 @@ public class ProfileEditorActivity extends AppCompatActivity {
         edtPhone = findViewById(R.id.edt_phone);
         edtAddress = findViewById(R.id.edt_address);
 
+        imgProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PhotoDetailsActivity.setBm(BitmapUtils.base64StringToBitmap(user.getProfileImageStr()));
+                startActivity(new Intent(ProfileEditorActivity.this, PhotoDetailsActivity.class));
+            }
+        });
+
         findViewById(R.id.img_pick_photo).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
