@@ -122,9 +122,7 @@ public class ProfileFragment extends BaseFragment implements ItemRvAdapter.OnLis
     }
 
     private void fillUpDataToUI() {
-        if (!TextUtils.isEmpty(userData.getProfileImageStr())) {
-            imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
-        }
+        imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(userData.getProfileImageStr()));
         tvName.setText(userData.getName());
         tvEmail.setText(user.getEmail());
         tvPhone.setText(userData.getPhone());

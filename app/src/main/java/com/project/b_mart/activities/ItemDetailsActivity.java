@@ -79,6 +79,14 @@ public class ItemDetailsActivity extends AppCompatActivity {
             }
         });
 
+        tvPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileDetailsActivity.setUid(item.getSellerId());
+                startActivity(new Intent(ItemDetailsActivity.this, ProfileDetailsActivity.class));
+            }
+        });
+
         tvLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

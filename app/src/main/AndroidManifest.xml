@@ -17,10 +17,14 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".activities.ProfileDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.PhotoDetailsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activities.ProfileEditorActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".activities.MapsActivity"
