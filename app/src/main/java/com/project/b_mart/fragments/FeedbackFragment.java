@@ -1,5 +1,6 @@
 package com.project.b_mart.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
+import com.project.b_mart.activities.FeedbackDetailsActivity;
 import com.project.b_mart.adapters.FeedbackRvAdapter;
 import com.project.b_mart.models.Feedback;
 import com.project.b_mart.utils.Constants;
@@ -49,6 +51,8 @@ public class FeedbackFragment extends BaseFragment implements FeedbackRvAdapter.
 
     @Override
     public void onClick(int position, Feedback feedback) {
+        FeedbackDetailsActivity.setFeedback(feedback);
+        startActivity(new Intent(getContext(), FeedbackDetailsActivity.class));
     }
 
     @Override

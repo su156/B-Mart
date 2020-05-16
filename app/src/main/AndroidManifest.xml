@@ -17,6 +17,9 @@
             android:value="@string/google_maps_key" />
 
         <activity
+            android:name=".activities.FeedbackDetailsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
             android:name=".activities.FeedbackEditorActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
