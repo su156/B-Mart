@@ -99,7 +99,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
 
         changeFavIconAndFavList(Helper.getFavList().contains(item.getId()));
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
             finish();
@@ -113,6 +113,8 @@ public class ItemDetailsActivity extends AppCompatActivity {
             btnFeedback.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    FeedbackEditorActivity.setCreatorId(user.getUid());
+                    FeedbackEditorActivity.setRecipientId(item.getSellerId());
                     startActivity(new Intent(ItemDetailsActivity.this, FeedbackEditorActivity.class));
                 }
             });
