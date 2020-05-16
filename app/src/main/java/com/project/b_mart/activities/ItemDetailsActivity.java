@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,6 +59,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
         tvAddress = findViewById(R.id.tv_address);
         tvLocation = findViewById(R.id.tv_location_2);
         tvDescription = findViewById(R.id.tv_description);
+        Button btnFeedback = findViewById(R.id.btn_feedback);
 
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +107,16 @@ public class ItemDetailsActivity extends AppCompatActivity {
         }
         favTable = FirebaseDatabase.getInstance().getReference(Constants.FAV_TABLE)
                 .child(user.getUid()).child(item.getId());
+
+        if (!user.getUid().equals(item.getSellerId())) {
+            btnFeedback.setVisibility(View.VISIBLE);
+            btnFeedback.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+        }
 
         fillUpDataToUI();
     }
