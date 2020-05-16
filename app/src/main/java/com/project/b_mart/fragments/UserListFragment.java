@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -22,6 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.UserAdapter;
+import com.project.b_mart.models.Item;
 import com.project.b_mart.models.User;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
@@ -46,7 +46,7 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
 
         RecyclerView rv = rootView.findViewById(R.id.rv);
 
-        adapter = new UserAdapter(this);
+        adapter = new UserAdapter(getContext(), this);
         rv.setAdapter(adapter);
         if (getContext() != null) {
             rv.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL));
@@ -138,11 +138,16 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
         FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
                 .orderByChild("sellerId")
                 .equalTo(uid)
-                .getRef()
-                .removeValue()
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                .addValueEventListener(new ValueEventListener() {
                     @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        List<Item> items = Item.parseItemList(dataSnapshot);
+
+                        deleteItems(items);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
                         Helper.dismissProgressDialog();
                     }
                 });
@@ -160,5 +165,23 @@ public class UserListFragment extends BaseFragment implements UserAdapter.OnList
         }
 
         return list;
+    }
+
+    private void deleteItems(final List<Item> items) {
+        if (items == null || items.isEmpty()) {
+            Helper.dismissProgressDialog();
+            return;
+        }
+
+        FirebaseDatabase.getInstance().getReference(Constants.ITEM_TABLE)
+                .child(items.get(0).getId())
+                .removeValue()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        items.remove(0);
+                        deleteItems(items);
+                    }
+                });
     }
 }

@@ -1,5 +1,6 @@
 package com.project.b_mart.adapters;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,11 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> implements Filterable {
+    private Context context;
     private List<User> dataSet;
     private List<User> filteredDataSet;
     private OnListItemClickListener onListItemClickListener;
 
-    public UserAdapter(OnListItemClickListener onListItemClickListener) {
+    public UserAdapter(Context context, OnListItemClickListener onListItemClickListener) {
+        this.context = context;
         this.onListItemClickListener = onListItemClickListener;
     }
 
@@ -43,6 +46,8 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.ViewHolder> im
 
         if (!TextUtils.isEmpty(user.getProfileImageStr())) {
             holder.imgProfile.setImageBitmap(BitmapUtils.base64StringToBitmap(user.getProfileImageStr()));
+        } else {
+            holder.imgProfile.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_person_outline_black_24dp));
         }
         holder.tvName.setText(user.getName());
         holder.tvEmail.setText(user.getEmail());

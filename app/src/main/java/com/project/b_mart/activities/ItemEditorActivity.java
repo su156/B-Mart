@@ -71,6 +71,11 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
             return;
         }
 
+        if (item != null) {
+            topCategory = item.getCategory();
+            subCategory = item.getSubCategory();
+        }
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -306,6 +311,10 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (item == null) {
+                            return;
+                        }
+
                         userData = dataSnapshot.getValue(User.class);
 
                         if (TextUtils.isEmpty(item.getId())) {
