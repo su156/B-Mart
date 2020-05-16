@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.project.b_mart.R;
 import com.project.b_mart.adapters.DrawerItemCustomAdapter;
 import com.project.b_mart.fragments.ContactUsFragment;
+import com.project.b_mart.fragments.FeedbackFragment;
 import com.project.b_mart.fragments.HomeFragment;
 import com.project.b_mart.fragments.ProfileFragment;
 import com.project.b_mart.fragments.FavouriteFragment;
@@ -43,7 +44,6 @@ import com.project.b_mart.utils.SharedPreferencesUtils;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
     private CharSequence title;
-    private String[] mNavigationDrawerItemTitles;
     private NavigationItem[] drawerItem;
 
     private DrawerLayout mDrawerLayout;
@@ -63,24 +63,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         fragmentManager = getSupportFragmentManager();
 
         title = getTitle();
-        mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
+        String[] mNavigationDrawerItemTitles = getResources().getStringArray(R.array.navigation_drawer_items_array);
         mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerList = findViewById(R.id.left_drawer);
 
         setupToolbar();
 
-        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 3 : 6];
+        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 4 : 7];
         if (Helper.isIsSystemAdmin()) {
             drawerItem[0] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
             drawerItem[1] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
-            drawerItem[2] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+            drawerItem[2] = new NavigationItem(R.drawable.ic_feedback_black_24dp, getString(R.string.feedback));
+            drawerItem[3] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
         } else {
             drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
             drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
             drawerItem[2] = new NavigationItem(R.drawable.ic_favorite_black_24dp, mNavigationDrawerItemTitles[3]);
             drawerItem[3] = new NavigationItem(R.drawable.ic_shopping_cart_black_24dp, mNavigationDrawerItemTitles[4]);
-            drawerItem[4] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
-            drawerItem[5] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+            drawerItem[4] = new NavigationItem(R.drawable.ic_feedback_black_24dp, getString(R.string.feedback));
+            drawerItem[5] = new NavigationItem(R.drawable.ic_info_black_24dp, mNavigationDrawerItemTitles[5]);
+            drawerItem[6] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
         }
 
         DrawerItemCustomAdapter adapter = new DrawerItemCustomAdapter(this, R.layout.layout_drawer_item, drawerItem);
@@ -166,6 +168,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                 case 1:
                     fragment = new UserListFragment();
                     break;
+                case 2:
+                    fragment = new FeedbackFragment();
+                    break;
                 default:
                     signOut();
                     return;
@@ -185,6 +190,9 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                     fragment = new ShoppingFragment(topCategory, subCategory);
                     break;
                 case 4:
+                    fragment = new FeedbackFragment();
+                    break;
+                case 5:
                     fragment = new ContactUsFragment();
                     break;
                 default:

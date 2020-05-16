@@ -1,8 +1,14 @@
 package com.project.b_mart.models;
 
+import com.google.firebase.database.DataSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Feedback {
     private String id;
     private String creatorId;
+    private String creatorEmail;
     private String recipientId;
     private String photoString;
     private String feedbackMessage;
@@ -21,6 +27,14 @@ public class Feedback {
 
     public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
+    }
+
+    public String getCreatorEmail() {
+        return creatorEmail;
+    }
+
+    public void setCreatorEmail(String creatorEmail) {
+        this.creatorEmail = creatorEmail;
     }
 
     public String getRecipientId() {
@@ -45,5 +59,13 @@ public class Feedback {
 
     public void setFeedbackMessage(String feedbackMessage) {
         this.feedbackMessage = feedbackMessage;
+    }
+
+    public static List<Feedback> parseFeedbackList(DataSnapshot dataSnapshot) {
+        List<Feedback> feedbackList = new ArrayList<>();
+        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+            feedbackList.add(snapshot.getValue(Feedback.class));
+        }
+        return feedbackList;
     }
 }

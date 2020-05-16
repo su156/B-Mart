@@ -26,6 +26,7 @@ import com.project.b_mart.utils.ImagePickerUtils;
 
 public class FeedbackEditorActivity extends AppCompatActivity {
     private static String creatorId;
+    private static String creatorEmail;
     private static String recipientId;
     private Feedback feedback;
 
@@ -38,19 +39,26 @@ public class FeedbackEditorActivity extends AppCompatActivity {
         setContentView(R.layout.activity_feedback_editor);
 
         if (TextUtils.isEmpty(creatorId)) {
-            Toast.makeText(this, "Creator Id is required!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Creator's Id is required!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        if (TextUtils.isEmpty(creatorEmail)) {
+            Toast.makeText(this, "Creator's email is required!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         if (TextUtils.isEmpty(recipientId)) {
-            Toast.makeText(this, "Recipient Id is required!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Recipient's Id is required!", Toast.LENGTH_SHORT).show();
             finish();
             return;
         }
 
         feedback = new Feedback();
         feedback.setCreatorId(creatorId);
+        feedback.setCreatorEmail(creatorEmail);
         feedback.setRecipientId(recipientId);
 
         img = findViewById(R.id.img_screen_shot);
@@ -83,6 +91,7 @@ public class FeedbackEditorActivity extends AppCompatActivity {
         super.onDestroy();
 
         creatorId = null;
+        creatorEmail = null;
         recipientId = null;
     }
 

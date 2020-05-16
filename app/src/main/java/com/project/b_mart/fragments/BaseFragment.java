@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment;
 
 import com.project.b_mart.activities.MainActivity;
 
-public class BaseFragment extends Fragment {
+class BaseFragment extends Fragment {
 
     void setFavVisibility(int visibility) {
         if (getContext() != null) {
