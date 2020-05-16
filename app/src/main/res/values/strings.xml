@@ -38,6 +38,8 @@
     <string name="acc_is_blocked">%1$s acc is blocked!</string>
     <string name="warning">Warning</string>
     <string name="feedback">Feedback</string>
+    <string name="leave_product_feedback_or_share_your_ideas">Leave product feedback or share your ideas</string>
+    <string name="add_screen_shot_here">Add screen shot here</string>
 
     <string-array name="navigation_drawer_items_array">
         <item>Home</item>

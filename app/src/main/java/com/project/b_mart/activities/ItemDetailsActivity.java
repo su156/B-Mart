@@ -113,7 +113,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
             btnFeedback.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    startActivity(new Intent(ItemDetailsActivity.this, FeedbackEditorActivity.class));
                 }
             });
         }
