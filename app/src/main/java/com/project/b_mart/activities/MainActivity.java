@@ -82,12 +82,11 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
 
         setupToolbar();
 
-        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 4 : 7];
+        drawerItem = new NavigationItem[Helper.isIsSystemAdmin() ? 3 : 7];
         if (Helper.isIsSystemAdmin()) {
             drawerItem[0] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
             drawerItem[1] = new NavigationItem(R.drawable.ic_group_black_24dp, mNavigationDrawerItemTitles[2]);
-            drawerItem[2] = new NavigationItem(R.drawable.ic_feedback_black_24dp, getString(R.string.feedback));
-            drawerItem[3] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
+            drawerItem[2] = new NavigationItem(R.drawable.ic_exit_to_app_black_24dp, mNavigationDrawerItemTitles[6]);
         } else {
             drawerItem[0] = new NavigationItem(R.drawable.ic_home_black_24dp, mNavigationDrawerItemTitles[0]);
             drawerItem[1] = new NavigationItem(R.drawable.ic_person_black_24dp, mNavigationDrawerItemTitles[1]);
@@ -180,9 +179,6 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                     break;
                 case 1:
                     fragment = new UserListFragment();
-                    break;
-                case 2:
-                    fragment = new FeedbackFragment();
                     break;
                 default:
                     signOut();
