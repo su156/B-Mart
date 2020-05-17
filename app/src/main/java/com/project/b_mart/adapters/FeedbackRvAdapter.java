@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.project.b_mart.R;
 import com.project.b_mart.models.Feedback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FeedbackRvAdapter extends RecyclerView.Adapter<FeedbackRvAdapter.ViewHolder> {
@@ -24,6 +25,16 @@ public class FeedbackRvAdapter extends RecyclerView.Adapter<FeedbackRvAdapter.Vi
     public void setDataSet(List<Feedback> dataSet) {
         this.dataSet = dataSet;
         notifyDataSetChanged();
+    }
+
+    public void addItem(Feedback feedback) {
+        if (dataSet == null || dataSet.isEmpty()) {
+            dataSet = new ArrayList<>();
+        }
+
+        dataSet.add(feedback);
+
+        notifyItemInserted(dataSet.size() - 1);
     }
 
     @NonNull
@@ -51,7 +62,7 @@ public class FeedbackRvAdapter extends RecyclerView.Adapter<FeedbackRvAdapter.Vi
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                onListItemClickListener.onClick(index, feedback);
+                onListItemClickListener.onLongClick(index, feedback);
                 return false;
             }
         });

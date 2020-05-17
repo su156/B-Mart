@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 
 import com.google.firebase.database.DataSnapshot;
 import com.project.b_mart.R;
+import com.project.b_mart.models.Feedback;
 import com.project.b_mart.models.Item;
 
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ import java.util.Set;
 public class Helper {
     private static Set<String> favList = new HashSet<>();
     private static List<Item> itemList = new ArrayList<>();
+    private static List<Feedback> feedbackList = new ArrayList<>();
     private static ProgressDialog progressDialog;
     private static boolean isSystemAdmin;
 
@@ -88,6 +90,36 @@ public class Helper {
         }
 
         return list;
+    }
+
+    public static List<Feedback> getFeedbackList() {
+        return feedbackList;
+    }
+
+    public static void setFeedbackList(List<Feedback> feedbackList) {
+        Helper.feedbackList = feedbackList;
+    }
+
+    public static void addFeedback(Feedback feedback) {
+        if (feedbackList == null || feedbackList.isEmpty()) {
+            feedbackList = new ArrayList<>();
+        }
+
+        feedbackList.add(feedback);
+    }
+
+    public static boolean isContainsInFeedbackList(Feedback feedback) {
+        if (feedbackList == null || feedbackList.isEmpty()) {
+            return false;
+        }
+
+        for (Feedback f : feedbackList) {
+            if (f.getId().equals(feedback.getId())) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public static void showProgressDialog(Context context, String title) {

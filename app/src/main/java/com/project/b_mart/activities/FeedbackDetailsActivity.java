@@ -24,6 +24,8 @@ public class FeedbackDetailsActivity extends AppCompatActivity {
 
         if (feedback == null) {
             Toast.makeText(this, "Nothing to show!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
         ImageView img = findViewById(R.id.img_screen_shot);

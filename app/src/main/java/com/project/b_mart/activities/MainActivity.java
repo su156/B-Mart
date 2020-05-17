@@ -1,7 +1,11 @@
 package com.project.b_mart.activities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,11 +14,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
@@ -23,6 +30,7 @@ import androidx.fragment.app.FragmentManager;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -36,11 +44,14 @@ import com.project.b_mart.fragments.ProfileFragment;
 import com.project.b_mart.fragments.FavouriteFragment;
 import com.project.b_mart.fragments.ShoppingFragment;
 import com.project.b_mart.fragments.UserListFragment;
+import com.project.b_mart.models.Feedback;
 import com.project.b_mart.models.Item;
 import com.project.b_mart.models.NavigationItem;
 import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.SharedPreferencesUtils;
+
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements HomeFragment.OnSubCategorySelectedListener {
     private CharSequence title;
@@ -52,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
     private ActionBarDrawerToggle mDrawerToggle;
     private FragmentManager fragmentManager;
     private FloatingActionButton fab;
+
+    private FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -254,17 +267,25 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
         if (!isAllPermissionsGranted()) {
             ActivityCompat.requestPermissions(this, Constants.PERMISSIONS.toArray(new String[0]), Constants.PERMISSIONS_REQUEST_CODE);
         } else if (!Helper.isIsSystemAdmin()) {
+            fetchUser();
             fetchFavList();
+            fetchFeedbackData();
+        }
+    }
+
+    private void fetchUser() {
+        user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 
     private void fetchFavList() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, "Fail to get seller id", Toast.LENGTH_SHORT).show();
-            finish();
             return;
         }
+
         Helper.showProgressDialog(this, "Loading...");
         FirebaseDatabase.getInstance().getReference(Constants.FAV_TABLE).child(user.getUid())
                 .addValueEventListener(new ValueEventListener() {
@@ -297,5 +318,101 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnSu
                         Helper.dismissProgressDialog();
                     }
                 });
+    }
+
+    private void fetchFeedbackData() {
+        if (user == null) {
+            return;
+        }
+
+        FirebaseDatabase.getInstance().getReference(Constants.FEEDBACK_TABLE)
+                .orderByChild("recipientId")
+                .equalTo(user.getUid())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        Helper.setFeedbackList(Feedback.parseFeedbackList(dataSnapshot));
+
+                        listenFeedbackNotification();
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    private void listenFeedbackNotification() {
+        if (user == null) {
+            return;
+        }
+
+        FirebaseDatabase.getInstance().getReference(Constants.FEEDBACK_TABLE)
+                .orderByChild("recipientId")
+                .equalTo(user.getUid())
+                .addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                        Feedback feedback = dataSnapshot.getValue(Feedback.class);
+                        if (feedback != null && !Helper.isContainsInFeedbackList(feedback)) {
+                            showNewFeedbackNotification(feedback);
+
+                            Helper.addFeedback(feedback);
+
+                            Fragment fragment = fragmentManager.findFragmentById(R.id.content_frame);
+                            if (fragment instanceof FeedbackFragment) {
+
+                                ((FeedbackFragment) fragment).onNewFeedback(feedback);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+
+                    @Override
+                    public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+                    }
+
+                    @Override
+                    public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    }
+                });
+    }
+
+    private void showNewFeedbackNotification(Feedback feedback) {
+        final int notificationId = new Random().nextInt(1000000);
+        final String channelId = "FEEDBACK_CHANNEL";
+        final String title = "New Feedback";
+
+        FeedbackDetailsActivity.setFeedback(feedback);
+        Intent intent = new Intent(this, FeedbackDetailsActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, notificationId, intent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_feedback_black_24dp)
+                .setContentTitle(title)
+                .setContentText(feedback.getFeedbackMessage())
+                .setContentIntent(pendingIntent)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    title,
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+            builder.setChannelId(channelId);
+        }
+
+        notificationManager.notify(notificationId, builder.build());
     }
 }
