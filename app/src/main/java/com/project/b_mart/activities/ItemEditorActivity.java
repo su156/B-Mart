@@ -52,6 +52,7 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
 
     private FirebaseUser user;
     private User userData;
+    private LocationManager locationManager;
 
     private ImageView imageView;
     private RadioButton rdbNew;
@@ -208,6 +209,8 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
         super.onDestroy();
 
         item = null;
+        locationManager.removeUpdates(this);
+        locationManager = null;
     }
 
     public static void setItem(Item i) {
@@ -334,7 +337,7 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
     }
 
     private void findCurrentLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (locationManager != null &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
