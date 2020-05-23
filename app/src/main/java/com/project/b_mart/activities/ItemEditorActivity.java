@@ -4,16 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
@@ -26,6 +20,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,14 +41,13 @@ import com.project.b_mart.utils.Constants;
 import com.project.b_mart.utils.Helper;
 import com.project.b_mart.utils.ImagePickerUtils;
 
-public class ItemEditorActivity extends AppCompatActivity implements LocationListener {
+public class ItemEditorActivity extends AppCompatActivity {
     private static Item item;
     private String topCategory;
     private String subCategory;
 
     private FirebaseUser user;
     private User userData;
-    private LocationManager locationManager;
 
     private ImageView imageView;
     private RadioButton rdbNew;
@@ -209,8 +204,6 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
         super.onDestroy();
 
         item = null;
-        locationManager.removeUpdates(this);
-        locationManager = null;
     }
 
     public static void setItem(Item i) {
@@ -321,7 +314,7 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
                         userData = dataSnapshot.getValue(User.class);
 
                         if (TextUtils.isEmpty(item.getId())) {
-                            findCurrentLocation();
+                            getDeviceLocation();
                         } else {
                             Helper.dismissProgressDialog();
 
@@ -336,35 +329,34 @@ public class ItemEditorActivity extends AppCompatActivity implements LocationLis
                 });
     }
 
-    private void findCurrentLocation() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager != null &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
-        }
+    /*
+     * Get the best and most recent location of the device, which may be null in rare
+     * cases when a location is not available.
+     */
+    private void getDeviceLocation() {
+        // Construct a FusedLocationProviderClient.
+        FusedLocationProviderClient mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        Task locationResult = mFusedLocationProviderClient.getLastLocation();
+        locationResult.addOnCompleteListener(this, new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                Helper.dismissProgressDialog();
+                if (task.isSuccessful()) {
+                    Location mLastKnownLocation = (Location) task.getResult();
+                    setCurrentLocationDataToUI(mLastKnownLocation);
+                } else {
+                    Toast.makeText(ItemEditorActivity.this, "Fail to get current location!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
-    @Override
-    public void onLocationChanged(Location location) {
-        if (item != null && item.getLocationLatitude() == 0 && item.getLocationLongitude() == 0) {
-            Helper.dismissProgressDialog();
+    private void setCurrentLocationDataToUI(Location location) {
+        if (item != null && location != null && item.getLocationLatitude() == 0 && item.getLocationLongitude() == 0) {
             item.setLocationLatitude(location.getLatitude());
             item.setLocationLongitude(location.getLongitude());
 
             fillUpDataToUI();
         }
-    }
-
-    @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-    }
-
-    @Override
-    public void onProviderEnabled(String provider) {
-    }
-
-    @Override
-    public void onProviderDisabled(String provider) {
     }
 }
