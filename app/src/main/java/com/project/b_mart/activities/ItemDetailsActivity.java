@@ -114,6 +114,7 @@ public class ItemDetailsActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     FeedbackEditorActivity.setCreatorId(user.getUid());
+                    FeedbackEditorActivity.setCreatorEmail(user.getEmail());
                     FeedbackEditorActivity.setRecipientId(item.getSellerId());
                     startActivity(new Intent(ItemDetailsActivity.this, FeedbackEditorActivity.class));
                 }

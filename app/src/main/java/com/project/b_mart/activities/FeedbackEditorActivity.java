@@ -112,6 +112,10 @@ public class FeedbackEditorActivity extends AppCompatActivity {
         FeedbackEditorActivity.creatorId = creatorId;
     }
 
+    public static void setCreatorEmail(String creatorEmail) {
+        FeedbackEditorActivity.creatorEmail = creatorEmail;
+    }
+
     public static void setRecipientId(String recipientId) {
         FeedbackEditorActivity.recipientId = recipientId;
     }
